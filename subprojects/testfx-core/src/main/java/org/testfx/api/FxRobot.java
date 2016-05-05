@@ -547,6 +547,20 @@ public class FxRobot implements FxRobotInterface {
         waitForFxEvents();
         return this;
     }
+    
+    @Override
+    @Unstable(reason = "is missing tests")
+    public FxRobot interactFast(Runnable runnable) {
+        waitFor(asyncFx(runnable));
+        return this;
+    }
+    @Override
+    @Unstable(reason = "is missing tests")
+    public <T> FxRobot interactFast(Callable<T> callable) {
+        waitFor(asyncFx(callable));
+        return this;
+    }
+    
 
     @Override
     @Unstable(reason = "is missing apidocs")
