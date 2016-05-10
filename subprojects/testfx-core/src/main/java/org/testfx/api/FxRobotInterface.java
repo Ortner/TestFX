@@ -215,7 +215,7 @@ public interface FxRobotInterface {
 	 * @param runnable the runnable
      * @return this robot
      */
-    public FxRobotInterface interactFast(Runnable runnable);
+    public FxRobotInterface interactNoWait(Runnable runnable);
     /**
 	 * Calls a callable on the FX application thread and waits for it to
 	 * execute. It does not wait for other events on the fx application thread.
@@ -225,7 +225,7 @@ public interface FxRobotInterface {
      * @param callable the callable
      * @return this robot
      */
-    public <T> FxRobotInterface interactFast(Callable<T> callable);
+    public <T> FxRobotInterface interactNoWait(Callable<T> callable);
 
     public FxRobotInterface interrupt();
     public FxRobotInterface interrupt(int attemptsCount);
