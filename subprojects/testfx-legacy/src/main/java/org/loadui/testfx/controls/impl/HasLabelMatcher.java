@@ -32,7 +32,8 @@ public class HasLabelMatcher extends TypeSafeMatcher<Object> {
         this.matcher = matcher;
     }
 
-    public void describeTo(Description desc) {
+    @Override
+	public void describeTo(Description desc) {
         desc.appendText("Node should match " + matcher);
     }
 

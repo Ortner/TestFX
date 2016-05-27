@@ -33,7 +33,8 @@ public class VisibleNodesMatcher extends TypeSafeMatcher<Object> {
         return new VisibleNodesMatcher();
     }
 
-    public void describeTo(Description desc) {
+    @Override
+	public void describeTo(Description desc) {
         desc.appendText("visible");
     }
 
