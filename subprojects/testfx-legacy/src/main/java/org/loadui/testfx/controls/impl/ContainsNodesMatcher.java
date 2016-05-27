@@ -46,7 +46,8 @@ public class ContainsNodesMatcher extends TypeSafeMatcher<String> {
         return new ContainsNodesMatcher(numberOf, domQuery);
     }
 
-    public void describeTo(Description desc) {
+    @Override
+	public void describeTo(Description desc) {
         desc.appendText("contains");
     }
 

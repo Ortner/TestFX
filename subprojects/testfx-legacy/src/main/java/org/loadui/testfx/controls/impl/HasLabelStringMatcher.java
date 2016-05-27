@@ -35,7 +35,8 @@ public class HasLabelStringMatcher extends TypeSafeMatcher<Object> {
         this.label = label;
     }
 
-    public void describeTo(Description desc) {
+    @Override
+	public void describeTo(Description desc) {
         desc.appendText("Node should have label ");
         desc.appendValue(label);
     }
