@@ -29,10 +29,10 @@ import static org.loadui.testfx.GuiTest.find;
  */
 public class TextInputControls {
 
-	/**
-	 * Clears all text in the given TextInputControl.
-	 * @param textInputControl the textInputControl to clear
-	 */
+    /**
+     * Clears all text in the given TextInputControl.
+     * @param textInputControl the textInputControl to clear
+     */
     public static void clearTextIn(TextInputControl textInputControl) {
         textInputControl.clear();
     }
