@@ -19,7 +19,7 @@
 // of validation rules (best practices).
 // https://github.com/checkstyle/checkstyle
 
-apply plugin: "checkstyle"
+/*apply plugin: "checkstyle"
 
 checkstyle {
     configFile = rootProject.file("gradle/check/checkstyle.xml")
@@ -27,3 +27,4 @@ checkstyle {
     ignoreFailures = false
     toolVersion = "7.3"
 }
+*/
