@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -20,22 +20,15 @@ import javafx.stage.Window;
 
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
-import org.testfx.api.annotation.Unstable;
 
 import static org.testfx.matcher.base.GeneralMatchers.baseMatcher;
 
 /**
- * TestFX matchers for {@link Window}
+ * TestFX matchers for {@link Window} instances.
  */
-@Unstable(reason = "needs more tests")
 public class WindowMatchers {
-    private WindowMatchers() {
-        // intentionally private and blank
-    }
 
-    //---------------------------------------------------------------------------------------------
-    // STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
+    private WindowMatchers() {}
 
     /**
      * A matcher checking if a window is currently showing.
@@ -44,7 +37,7 @@ public class WindowMatchers {
      */
     @Factory
     public static Matcher<Window> isShowing() {
-        return baseMatcher("Window is showing", WindowMatchers::isShowing);
+        return baseMatcher("Window is showing", Window::isShowing);
     }
 
     /**
@@ -54,7 +47,7 @@ public class WindowMatchers {
      */
     @Factory
     public static Matcher<Window> isNotShowing() {
-        return baseMatcher("Window is not showing", window -> !isShowing(window));
+        return baseMatcher("Window is not showing", window -> !window.isShowing());
     }
 
     /**
@@ -64,7 +57,7 @@ public class WindowMatchers {
      */
     @Factory
     public static Matcher<Window> isFocused() {
-        return baseMatcher("Window is focused", WindowMatchers::isFocused);
+        return baseMatcher("Window is focused", Window::isFocused);
     }
 
     /**
@@ -74,18 +67,7 @@ public class WindowMatchers {
      */
     @Factory
     public static Matcher<Window> isNotFocused() {
-        return baseMatcher("Window is not focused", window -> !isFocused(window));
+        return baseMatcher("Window is not focused", window -> !window.isFocused());
     }
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    private static boolean isShowing(Window window) {
-        return window.isShowing();
-    }
-
-    private static boolean isFocused(Window window) {
-        return window.isFocused();
-    }
 }

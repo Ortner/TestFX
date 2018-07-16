@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,7 +21,7 @@ import javafx.scene.input.MouseButton;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.robot.ClickRobot;
 import org.testfx.robot.Motion;
 import org.testfx.robot.MouseRobot;
@@ -29,24 +29,23 @@ import org.testfx.robot.MoveRobot;
 import org.testfx.robot.SleepRobot;
 import org.testfx.service.query.PointQuery;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-public final class ClickRobotImplTest {
+public class ClickRobotImplTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
 
-    public ClickRobot clickRobot;
-
-    public MouseRobot mouseRobot;
-    public MoveRobot moveRobot;
-    public SleepRobot sleepRobot;
+    ClickRobot clickRobot;
+    MouseRobot mouseRobot;
+    MoveRobot moveRobot;
+    SleepRobot sleepRobot;
 
     @Before
     public void setup() {

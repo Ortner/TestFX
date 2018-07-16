@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -18,15 +18,14 @@ package org.testfx.cases.integration;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
 import org.testfx.cases.TestCaseBase;
+import org.testfx.framework.junit.TestFXRule;
 
 public class SimpleLabelTest extends TestCaseBase {
 
@@ -36,7 +35,7 @@ public class SimpleLabelTest extends TestCaseBase {
     @Before
     public void setup() throws Exception {
         FxToolkit.setupStage(stage -> {
-            Scene scene = new Scene(createSceneRoot(getClass()), 300, 100);
+            Scene scene = new Scene(new StackPane(new Label("SimpleLabelTest")), 300, 100);
             stage.setScene(scene);
             stage.show();
         });
@@ -45,10 +44,6 @@ public class SimpleLabelTest extends TestCaseBase {
     @Test
     public void should_move_to_label() {
         moveTo(".label").sleep(1000);
-    }
-
-    private Region createSceneRoot(Class<?> cls) {
-        return new StackPane(new Label(cls.getSimpleName()));
     }
 
 }

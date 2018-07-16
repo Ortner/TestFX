@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,49 +16,49 @@
  */
 package org.testfx.robot.impl;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Window;
 
-import com.google.common.collect.Lists;
-import org.testfx.api.annotation.Unstable;
 import org.testfx.robot.BaseRobot;
 import org.testfx.robot.SleepRobot;
 import org.testfx.robot.WriteRobot;
 import org.testfx.service.finder.WindowFinder;
+import org.testfx.util.WaitForAsyncUtils;
 
-@Unstable
 public class WriteRobotImpl implements WriteRobot {
 
-    //---------------------------------------------------------------------------------------------
-    // CONSTANTS.
-    //---------------------------------------------------------------------------------------------
+    private static final int SLEEP_AFTER_CHARACTER_IN_MILLIS;
 
-    private static final long SLEEP_AFTER_CHARACTER_IN_MILLIS = 25;
+    static {
+        int writeSleep;
+        try {
+            writeSleep = Integer.getInteger("testfx.robot.write_sleep", 25);
+        }
+        catch (NumberFormatException e) {
+            System.err.println("\"testfx.robot.write_sleep\" property must be a number but was: \"" +
+                    System.getProperty("testfx.robot.write_sleep") + "\".\nUsing default of \"25\" milliseconds.");
+            e.printStackTrace();
+            writeSleep = 25;
+        }
+        SLEEP_AFTER_CHARACTER_IN_MILLIS = writeSleep;
+    }
 
-    //---------------------------------------------------------------------------------------------
-    // FIELDS.
-    //---------------------------------------------------------------------------------------------
+    private final BaseRobot baseRobot;
+    private final SleepRobot sleepRobot;
+    private final WindowFinder windowFinder;
 
-    public BaseRobot baseRobot;
-    public SleepRobot sleepRobot;
-    public WindowFinder windowFinder;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
-
-    public WriteRobotImpl(BaseRobot baseRobot,
-                          SleepRobot sleepRobot,
-                          WindowFinder windowFinder) {
+    public WriteRobotImpl(BaseRobot baseRobot, SleepRobot sleepRobot, WindowFinder windowFinder) {
+        Objects.requireNonNull(baseRobot, "baseRobot must not be null");
+        Objects.requireNonNull(sleepRobot, "sleepRobot must not be null");
+        Objects.requireNonNull(windowFinder, "windowFinder must not be null");
         this.baseRobot = baseRobot;
         this.sleepRobot = sleepRobot;
         this.windowFinder = windowFinder;
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public void write(char character) {
@@ -68,16 +68,17 @@ public class WriteRobotImpl implements WriteRobot {
 
     @Override
     public void write(String text) {
-        Scene scene = fetchTargetWindow().getScene();
-        for (char character : Lists.charactersOf(text)) {
-            typeCharacterInScene(character, scene);
-            sleepRobot.sleep(SLEEP_AFTER_CHARACTER_IN_MILLIS);
-        }
+        write(text, SLEEP_AFTER_CHARACTER_IN_MILLIS);
     }
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
+    @Override
+    public void write(String text, int sleepMillis) {
+        Scene scene = fetchTargetWindow().getScene();
+        for (char character : text.chars().mapToObj(i -> (char) i).collect(Collectors.toList())) {
+            typeCharacterInScene(character, scene);
+            sleepRobot.sleep(sleepMillis);
+        }
+    }
 
     private Window fetchTargetWindow() {
         Window targetWindow = windowFinder.window(Window::isFocused);
@@ -94,7 +95,7 @@ public class WriteRobotImpl implements WriteRobot {
                                       Scene scene) {
         KeyCode key = determineKeyCode(character);
         baseRobot.typeKeyboard(scene, key, Character.toString(character));
-        baseRobot.awaitEvents();
+        WaitForAsyncUtils.waitForFxEvents();
     }
 
     private KeyCode determineKeyCode(char character) {

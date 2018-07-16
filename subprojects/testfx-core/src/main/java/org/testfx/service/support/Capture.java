@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -19,7 +19,7 @@ package org.testfx.service.support;
 import javafx.scene.image.Image;
 
 /**
- * Essentially a {@link java.util.function.Supplier} that returns an {@link Image} via {@link #getImage()}
+ * Essentially a {@link java.util.function.Supplier} that returns an {@link Image} via {@link #getImage()}.
  */
 @FunctionalInterface
 public interface Capture {

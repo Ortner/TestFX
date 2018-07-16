@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -24,21 +24,20 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
+import org.testfx.service.query.EmptyNodeQueryException;
 import org.testfx.service.query.NodeQuery;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.testfx.util.NodeQueryUtils.bySelector;
 import static org.testfx.util.NodeQueryUtils.combine;
@@ -49,25 +48,17 @@ public class NodeQueryImplTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
-    NodeQuery nodeQuery;
 
+    NodeQuery nodeQuery;
     Scene scene;
 
     @FXML Pane labels;
-    @FXML Pane buttons;
-    @FXML Pane textfields;
-
     @FXML Label label0;
     @FXML Label label1;
     @FXML Label label2;
-
     @FXML Button button0;
     @FXML Button button1;
     @FXML Button button2;
-
-    @FXML TextField textfield0;
-    @FXML TextField textfield1;
-    @FXML TextField textfield2;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
@@ -78,7 +69,7 @@ public class NodeQueryImplTest {
     public void setup() throws Exception {
         nodeQuery = new NodeQueryImpl();
 
-        FxToolkit.setupStage((stage) -> {
+        FxToolkit.setupStage(stage -> {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("res/nodeQueryImpl.fxml"));
             loader.setController(this);
@@ -92,7 +83,7 @@ public class NodeQueryImplTest {
     }
 
     @Test
-    public void queryFirst() {
+    public void query() {
         // when:
         Node result = nodeQuery
             .from(label0, label1, label2)
@@ -103,17 +94,14 @@ public class NodeQueryImplTest {
     }
 
     @Test
-    public void queryFirst_is_null() {
-        // when:
-        Node result = nodeQuery
-            .query();
-
-        // then:
-        assertThat(result, is(nullValue()));
+    public void empty_query_throws_exception() {
+        assertThatThrownBy(() -> nodeQuery.query())
+                .isExactlyInstanceOf(EmptyNodeQueryException.class)
+                .hasMessageContaining("the empty NodeQuery");
     }
 
     @Test
-    public void tryQueryFirst() {
+    public void tryQuery() {
         // when:
         Optional<Node> result = nodeQuery
             .from(label0, label1, label2)
@@ -124,7 +112,7 @@ public class NodeQueryImplTest {
     }
 
     @Test
-    public void tryQueryFirst_is_absent() {
+    public void tryQueryFirst_absent() {
         // when:
         Optional<Node> result = nodeQuery
             .tryQuery();
@@ -141,7 +129,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0, label1, label2));
+        assertThat(result, hasItems(label0, label1, label2));
     }
 
     @Test
@@ -151,7 +139,18 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, is(empty()));
+        assertThat(result.isEmpty(), is(true));
+    }
+
+    @Test
+    public void queryAllAs() {
+        // when:
+        Set<Label> result = nodeQuery
+                .from(label0, label1, label2)
+                .queryAllAs(Label.class);
+
+        // then:
+        assertThat(result, hasItems(label0, label1, label2));
     }
 
     @Test
@@ -162,7 +161,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0, label1));
+        assertThat(result, hasItems(label0, label1));
     }
 
     @Test
@@ -173,7 +172,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label1, label0));
+        assertThat(result, hasItems(label1, label0));
     }
 
     @Test
@@ -184,7 +183,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0, label1));
+        assertThat(result, hasItems(label0, label1));
     }
 
     @Test
@@ -195,7 +194,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0));
+        assertThat(result, hasItems(label0));
     }
 
     @Test
@@ -206,7 +205,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0));
+        assertThat(result, hasItems(label0));
     }
 
     @Test
@@ -218,7 +217,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0, label1, label2));
+        assertThat(result, hasItems(label0, label1, label2));
     }
 
     @Test
@@ -231,7 +230,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0, label1, label2));
+        assertThat(result, hasItems(label0, label1, label2));
     }
 
     @Test
@@ -243,7 +242,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label0, label1, label2, button0, button1, button2));
+        assertThat(result, hasItems(label0, label1, label2, button0, button1, button2));
     }
 
     @Test
@@ -256,7 +255,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label1));
+        assertThat(result, hasItems(label1));
     }
 
     @Test
@@ -271,7 +270,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(label2));
+        assertThat(result, hasItems(label2));
     }
 
     @Test
@@ -284,11 +283,11 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, empty());
+        assertThat(result.isEmpty(), is(true));
     }
 
     @Test
-    public void lookup_selectAt_lookup_selectAt_with_indizes_out_of_bounds() {
+    public void lookup_selectAt_lookup_selectAt_with_indices_out_of_bounds() {
         // when:
         Set<Node> result = nodeQuery
             .from(rootOfScene(scene))
@@ -299,7 +298,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, empty());
+        assertThat(result.isEmpty(), is(true));
     }
 
     @Test
@@ -312,7 +311,7 @@ public class NodeQueryImplTest {
             .queryAll();
 
         // then:
-        assertThat(result, contains(button1));
+        assertThat(result, hasItems(button1));
     }
 
 }

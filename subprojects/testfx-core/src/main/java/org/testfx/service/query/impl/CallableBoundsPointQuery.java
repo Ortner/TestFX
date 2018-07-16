@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,21 +21,11 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 
-import org.testfx.api.annotation.Unstable;
 import org.testfx.service.query.PointQuery;
 
-@Unstable
 public class CallableBoundsPointQuery extends PointQueryBase {
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
-
-    private Callable<Bounds> callableBounds;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
+    private final Callable<Bounds> callableBounds;
 
     public CallableBoundsPointQuery(Callable<Bounds> callableBounds) {
         this(callableBounds, null);
@@ -45,11 +35,6 @@ public class CallableBoundsPointQuery extends PointQueryBase {
         this.callableBounds = callableBounds;
         this.node = node;
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
-
     @Override
     public Point2D query() {
         Bounds bounds = fetchCallableBounds();
@@ -58,10 +43,6 @@ public class CallableBoundsPointQuery extends PointQueryBase {
             .atOffset(getOffset());
         return boundsQuery.query();
     }
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
 
     private Bounds fetchCallableBounds() {
         try {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -23,41 +23,39 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import com.google.common.collect.Lists;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
 import org.testfx.cases.TestCaseBase;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.util.WaitForAsyncUtils;
 
 import static javafx.collections.FXCollections.observableArrayList;
-import static org.hamcrest.Matchers.contains;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.util.DebugUtils.informedErrorMessage;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DragAndDropTest extends TestCaseBase {
 
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
-    public ListView<String> leftListView;
-    public ListView<String> rightListView;
+    public TestFXRule testFXRule = new TestFXRule(3);
+
+    ListView<String> leftListView;
+    ListView<String> rightListView;
 
     @Before
     public void setup() throws Exception {
         FxToolkit.setupSceneRoot(() -> {
             leftListView = new ListView<>(observableArrayList("L1", "L2", "L3"));
             rightListView = new ListView<>(observableArrayList("R1", "R2", "R3"));
-            Lists.newArrayList(leftListView, rightListView).forEach(this::setupListView);
+            setupListView(leftListView);
+            setupListView(rightListView);
             return new HBox(leftListView, rightListView);
         });
         FxToolkit.setupStage(Stage::show);
     }
 
-    public void setupListView(ListView<String> listView) {
+    void setupListView(ListView<String> listView) {
         listView.setOnDragDetected(event -> {
             String selectedItem = listView.getSelectionModel().getSelectedItem();
             ClipboardContent content = new ClipboardContent();
@@ -89,9 +87,8 @@ public class DragAndDropTest extends TestCaseBase {
 
     @Test
     public void should_have_initialized_items() {
-        // expect:
-        verifyThat(leftListView.getItems(), contains("L1", "L2", "L3"), informedErrorMessage(this));
-        verifyThat(rightListView.getItems(), contains("R1", "R2", "R3"), informedErrorMessage(this));
+        assertThat(leftListView.getItems()).containsExactly("L1", "L2", "L3");
+        assertThat(rightListView.getItems()).containsExactly("R1", "R2", "R3");
     }
 
     @Test
@@ -102,9 +99,9 @@ public class DragAndDropTest extends TestCaseBase {
         drop();
 
         // then:
-        verifyThat(leftListView.getItems(), contains("L2", "L3"), informedErrorMessage(this));
+        assertThat(leftListView.getItems()).containsExactly("L2", "L3");
         // gets added to end of ListView
-        verifyThat(rightListView.getItems(), contains("R1", "R2", "R3", "L1"), informedErrorMessage(this));
+        assertThat(rightListView.getItems()).containsExactly("R1", "R2", "R3", "L1");
     }
 
     @Test
@@ -115,12 +112,12 @@ public class DragAndDropTest extends TestCaseBase {
         WaitForAsyncUtils.waitForFxEvents();
 
         // then:
-        verifyThat(leftListView.getItems(), contains("L1", "L2", "L3", "R3"), informedErrorMessage(this));
-        verifyThat(rightListView.getItems(), contains("R1", "R2"), informedErrorMessage(this));
+        assertThat(leftListView.getItems()).containsExactly("L1", "L2", "L3", "R3");
+        assertThat(rightListView.getItems()).containsExactly("R1", "R2");
     }
 
-    @Ignore("see #383")
     @Test
+    @Ignore("see #383")
     public void should_drag_and_drop_from_left_to_left() {
         // when:
         drag("L3");
@@ -128,8 +125,8 @@ public class DragAndDropTest extends TestCaseBase {
         WaitForAsyncUtils.waitForFxEvents();
 
         // then:
-        verifyThat(leftListView.getItems(), contains("L1", "L2", "L3"), informedErrorMessage(this));
-        verifyThat(rightListView.getItems(), contains("R1", "R2", "R3"), informedErrorMessage(this));
+        assertThat(leftListView.getItems()).containsExactly("L1", "L2", "L3");
+        assertThat(rightListView.getItems()).containsExactly("R1", "R2", "R3");
     }
 
 }

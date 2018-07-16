@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,9 +16,10 @@
  */
 package org.testfx.robot.impl;
 
+import java.util.Objects;
+
 import javafx.scene.input.MouseButton;
 
-import org.testfx.api.annotation.Unstable;
 import org.testfx.robot.ClickRobot;
 import org.testfx.robot.Motion;
 import org.testfx.robot.MouseRobot;
@@ -26,36 +27,22 @@ import org.testfx.robot.MoveRobot;
 import org.testfx.robot.SleepRobot;
 import org.testfx.service.query.PointQuery;
 
-@Unstable
 public class ClickRobotImpl implements ClickRobot {
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTANTS.
-    //---------------------------------------------------------------------------------------------
 
     private static final long SLEEP_AFTER_DOUBLE_CLICK_IN_MILLIS = 50;
 
-    //---------------------------------------------------------------------------------------------
-    // FIELDS.
-    //---------------------------------------------------------------------------------------------
-
-    public MouseRobot mouseRobot;
-    public MoveRobot moveRobot;
-    public SleepRobot sleepRobot;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
+    private final MouseRobot mouseRobot;
+    private final MoveRobot moveRobot;
+    private final SleepRobot sleepRobot;
 
     public ClickRobotImpl(MouseRobot mouseRobot, MoveRobot moveRobot, SleepRobot sleepRobot) {
+        Objects.requireNonNull(mouseRobot, "mouseRobot must not be null");
+        Objects.requireNonNull(moveRobot, "moveRobot must not be null");
+        Objects.requireNonNull(sleepRobot, "sleepRobot must not be null");
         this.mouseRobot = mouseRobot;
         this.moveRobot = moveRobot;
         this.sleepRobot = sleepRobot;
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public void clickOn(MouseButton... buttons) {

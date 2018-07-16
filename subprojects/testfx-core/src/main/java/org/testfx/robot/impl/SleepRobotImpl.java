@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -18,15 +18,9 @@ package org.testfx.robot.impl;
 
 import java.util.concurrent.TimeUnit;
 
-import org.testfx.api.annotation.Unstable;
 import org.testfx.robot.SleepRobot;
 
-@Unstable(reason = "needs more tests")
 public class SleepRobotImpl implements SleepRobot {
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public void sleep(long milliseconds) {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,19 +21,20 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.framework.junit.TestFXRule;
 
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.base.NodeMatchers.hasText;
+import static org.testfx.matcher.control.LabeledMatchers.hasText;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
 
 public class ApplicationStartTest extends ApplicationTest {
 
-    //---------------------------------------------------------------------------------------------
-    // FIXTURE METHODS.
-    //---------------------------------------------------------------------------------------------
+    @Rule
+    public TestFXRule testFXRule = new TestFXRule(3);
 
     @Override
     public void init() throws Exception {
@@ -43,7 +44,7 @@ public class ApplicationStartTest extends ApplicationTest {
     @Override
     public void start(Stage stage) {
         Button button = new Button("click me!");
-        button.setOnAction((actionEvent) -> button.setText("clicked!"));
+        button.setOnAction(actionEvent -> button.setText("clicked!"));
         stage.setScene(new Scene(new StackPane(button), 100, 100));
         stage.show();
     }
@@ -52,10 +53,6 @@ public class ApplicationStartTest extends ApplicationTest {
     public void stop() throws Exception {
         FxToolkit.hideStage();
     }
-
-    //---------------------------------------------------------------------------------------------
-    // FEATURE METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Test
     public void should_contain_button() {

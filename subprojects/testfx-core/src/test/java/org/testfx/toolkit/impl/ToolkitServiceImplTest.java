@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -17,6 +17,7 @@
 package org.testfx.toolkit.impl;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -32,9 +33,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.toolkit.PrimaryStageApplication;
-import org.testfx.toolkit.PrimaryStageFuture;
 import org.testfx.toolkit.ToolkitService;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -48,24 +48,23 @@ public class ToolkitServiceImplTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
-    public static Stage primaryStage;
-    public static ToolkitService toolkitService;
+
+    static Stage primaryStage;
+    static ToolkitService toolkitService;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
-        PrimaryStageFuture primaryStageFuture = PrimaryStageApplication.PRIMARY_STAGE_FUTURE;
+        CompletableFuture<Stage> primaryStageFuture = PrimaryStageApplication.PRIMARY_STAGE_FUTURE;
         Class<? extends Application> toolkitApplication = PrimaryStageApplication.class;
         toolkitService = new ToolkitServiceImpl(
-                new ApplicationLauncherImpl(), new ApplicationServiceImpl()
-        );
+                new ApplicationLauncherImpl(), new ApplicationServiceImpl());
 
         primaryStage = waitFor(10, TimeUnit.SECONDS,
-                toolkitService.setupPrimaryStage(primaryStageFuture, toolkitApplication)
-        );
+                toolkitService.setupPrimaryStage(primaryStageFuture, toolkitApplication));
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         waitForAsyncFx(2000, () -> {
             primaryStage.show();
             primaryStage.toBack();
@@ -74,7 +73,7 @@ public class ToolkitServiceImplTest {
     }
 
     @After
-    public void cleanup() throws Exception {
+    public void cleanup() {
         waitForAsyncFx(2000, () -> {
             Platform.setImplicitExit(false);
             primaryStage.hide();
@@ -104,18 +103,14 @@ public class ToolkitServiceImplTest {
         assertThat(scene, instanceOf(FixtureScene.class));
     }
 
-    //---------------------------------------------------------------------------------------------
-    // FIXTURE CLASSES.
-    //---------------------------------------------------------------------------------------------
-
     public static class FixtureApplication extends Application {
         @Override
-        public void init() throws Exception {
+        public void init() {
             printCurrentThreadName("Application#init()");
         }
 
         @Override
-        public void start(Stage primaryStage) throws Exception {
+        public void start(Stage primaryStage) {
             printCurrentThreadName("Application#start()");
             Parent parent = new StackPane(new Label(getClass().getSimpleName()));
             Scene scene = new Scene(parent, 400, 200);
@@ -124,7 +119,7 @@ public class ToolkitServiceImplTest {
         }
 
         @Override
-        public void stop() throws Exception {
+        public void stop() {
             printCurrentThreadName("Application#stop()");
         }
 
@@ -142,10 +137,6 @@ public class ToolkitServiceImplTest {
             setRoot(parent);
         }
     }
-
-    //---------------------------------------------------------------------------------------------
-    // HELPER METHODS.
-    //---------------------------------------------------------------------------------------------
 
     private static void printCurrentThreadName(String methodSignature) {
         String threadName = Thread.currentThread().getName();

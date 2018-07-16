@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,7 +21,7 @@ import javafx.scene.input.KeyCodeCombination;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.robot.KeyboardRobot;
 import org.testfx.robot.SleepRobot;
 import org.testfx.robot.TypeRobot;
@@ -29,26 +29,28 @@ import org.testfx.robot.TypeRobot;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.ALT;
 import static javafx.scene.input.KeyCode.B;
+import static javafx.scene.input.KeyCode.COMMAND;
 import static javafx.scene.input.KeyCode.CONTROL;
 import static javafx.scene.input.KeyCode.SHIFT;
 import static javafx.scene.input.KeyCombination.ALT_DOWN;
+
 import static javafx.scene.input.KeyCombination.CONTROL_DOWN;
 import static javafx.scene.input.KeyCombination.SHIFT_DOWN;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-public final class TypeRobotImplTest {
+public class TypeRobotImplTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
-    public TypeRobot typeRobot;
 
-    public KeyboardRobot keyboardRobot;
-    public SleepRobot sleepRobot;
+    TypeRobot typeRobot;
+    KeyboardRobot keyboardRobot;
+    SleepRobot sleepRobot;
 
     @Before
     public void setup() {
@@ -80,6 +82,17 @@ public final class TypeRobotImplTest {
     }
 
     @Test
+    public void push_with_keys_for_COMMAND_B() {
+        // when:
+        typeRobot.push(COMMAND, B);
+
+        // then:
+        verify(keyboardRobot, times(1)).pressNoWait(eq(COMMAND), eq(B));
+        verify(keyboardRobot, times(1)).release(eq(B), eq(COMMAND));
+        verifyNoMoreInteractions(keyboardRobot);
+    }
+
+    @Test
     public void push_with_combination_for_ALT_A() {
         // when:
         typeRobot.push(new KeyCodeCombination(A, ALT_DOWN));
@@ -93,7 +106,7 @@ public final class TypeRobotImplTest {
     @Test
     public void push_with_combination_for_CONTROL_SHIFT_A() {
         // when:
-        typeRobot.push(new KeyCodeCombination(A, CONTROL_DOWN, SHIFT_DOWN));
+        typeRobot.push(new KeyCodeCombination(A, SHIFT_DOWN, CONTROL_DOWN));
 
         // then:
         verify(keyboardRobot, times(1)).pressNoWait(eq(SHIFT), eq(CONTROL), eq(A));

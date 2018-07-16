@@ -2,42 +2,90 @@
 
 [![Travis CI](https://img.shields.io/travis/TestFX/TestFX/master.svg?label=travis&style=flat-square)](https://travis-ci.org/TestFX/TestFX)
 [![AppVeyor Build Status](https://img.shields.io/appveyor/ci/testfx/testfx/master.svg?style=flat-square)](https://ci.appveyor.com/project/testfx/testfx/branch/master)
+[![Coveralls Test Coverage](https://img.shields.io/coveralls/github/TestFX/TestFX/master.svg?style=flat-square)](https://coveralls.io/github/TestFX/TestFX)
 [![Bintray JCenter](https://img.shields.io/bintray/v/testfx/testfx/testfx-core.svg?label=bintray&style=flat-square)](https://bintray.com/testfx/testfx)
 [![Maven Central](https://img.shields.io/maven-central/v/org.testfx/testfx-core.svg?label=maven&style=flat-square)](https://search.maven.org/#search|ga|1|org.testfx)
 [![Chat on Gitter](https://img.shields.io/gitter/room/testfx/testfx-core.svg?style=flat-square)](https://gitter.im/TestFX/TestFX)
 
-Simple and clean testing for [JavaFX][10].
+Simple and clean testing for JavaFX.
 
-[10]: http://www.oracle.com/technetwork/java/javase/overview/javafx-overview-2158620.html
-
-
-## Status
-
-Version 4 is in alpha phase. Release notes are listed in [`CHANGES.md`](CHANGES.md) and latest documentation is only available via `gradle javadoc`.
-
+TestFX requires a minimum JDK version of 8 (1.8).
 
 ## Features
 
 - A fluent and clean API.
 - Flexible setup and cleanup of JavaFX test fixtures.
 - Simple robots to simulate user interactions.
-- Rich collection of matchers to verify expected states.
+- Rich collection of matchers and assertions to verify expected states of JavaFX scene-graph nodes.
 
 **Support for:**
 
-- Java 8 features and JavaFX 8 controls.
-- JUnit testing framework and Hamcrest matchers.
-- Precise screenshots of failed tests.
-- Headless testing using Monocle.
+- Java 8 and 9.
+- Multiple testing frameworks ([Junit 4](http://junit.org/junit4/), [Junit 5](http://junit.org/junit5/), and [Spock](http://spockframework.org/)).
+- [Hamcrest](http://hamcrest.org/) matchers or [AssertJ](http://joel-costigliola.github.io/assertj/) assertions (or both!).
+- Screenshots of failed tests.
+- Headless testing using [Monocle](https://github.com/TestFX/Monocle).
 
+## Gradle
 
-## Example
+To add a dependency on TestFX using Gradle, use the following:
 
-~~~java
+```gradle
+dependencies {
+    testCompile "org.testfx:testfx-core:4.0.13-alpha"
+}
+```
+
+Next add a dependency corresponding to the testing framework you are using in
+your project. TestFX supports JUnit 4, JUnit 5, and Spock. For example if
+you are using JUnit 4 in your project you would add a dependency on `testfx-junit`:
+
+```gradle
+dependencies {
+    testCompile "org.testfx:testfx-junit:4.0.13-alpha"
+}
+```
+
+## Maven
+
+To add a dependency on TestFX using Maven, use the following:
+
+```xml
+<dependency>
+    <groupId>org.testfx</groupId>
+    <artifactId>testfx-core</artifactId>
+    <version>4.0.13-alpha</version>
+    <scope>test</scope>
+</dependency>
+```
+
+Next add a dependency corresponding to the testing framework you are using in
+your project. TestFX supports JUnit 4, JUnit 5, and Spock. For example if
+you are using JUnit 4 in your project you would add a dependency on `testfx-junit`:
+
+```xml
+<dependency>
+    <groupId>org.testfx</groupId>
+    <artifactId>testfx-junit</artifactId>
+    <version>4.0.13-alpha</version>
+    <scope>test</scope>
+</dependency>
+```
+
+## Example: JUnit 4 with Hamcrest Matchers
+
+```java
+import org.testfx.framework.junit.ApplicationTest;
+
 public class DesktopPaneTest extends ApplicationTest {
+
+    DesktopPane desktopPane;
+
     @Override
     public void start(Stage stage) {
-        Scene scene = new Scene(new DesktopPane(), 800, 600);
+        desktopPane = new DesktopPane();
+        desktopPane.setId("desktop");
+        Scene scene = new Scene(desktopPane, 800, 600);
         stage.setScene(scene);
         stage.show();
     }
@@ -46,7 +94,7 @@ public class DesktopPaneTest extends ApplicationTest {
     public void should_drag_file_into_trashcan() {
         // given:
         rightClickOn("#desktop").moveTo("New").clickOn("Text Document");
-        write("myTextfile.txt").push(ENTER);
+        write("myTextfile.txt").push(KeyCode.ENTER);
 
         // when:
         drag(".file").dropTo("#trash-can");
@@ -55,186 +103,187 @@ public class DesktopPaneTest extends ApplicationTest {
         verifyThat("#desktop", hasChildren(0, ".file"));
     }
 }
-~~~
+```
 
+## Example: JUnit 4 with AssertJ Assertions
 
-## Gradle and Maven
+```java
+import org.testfx.framework.junit.ApplicationTest;
 
-Gradle `build.gradle` with `testfx-core` and `testfx-junit` from Bintray's JCenter (at https://jcenter.bintray.com/):
+import static org.testfx.assertions.api.Assertions.assertThat;
 
-~~~groovy
-repositories {
-    jcenter()
-}
+public class DesktopPaneTest extends ApplicationTest {
 
-dependencies {
-    testCompile "org.testfx:testfx-core:4.0.+"
-    testCompile "org.testfx:testfx-junit:4.0.+"
-}
-~~~
+    DesktopPane desktopPane;
 
-Gradle `build.gradle` with `testfx-core`, `testfx-legacy` and a different `junit` version from Maven Central repository (at https://repo1.maven.org/maven2/).
+    @Override
+    public void start(Stage stage) {
+        desktopPane = new DesktopPane();
+        desktopPane.setId("desktop");
+        Scene scene = new Scene(desktopPane, 800, 600);
+        stage.setScene(scene);
+        stage.show();
+    }
 
-~~~groovy
-repositories {
-    mavenCentral()
-}
+    @Test
+    public void should_drag_file_into_trashcan() {
+        // given:
+        rightClickOn("#desktop").moveTo("New").clickOn("Text Document");
+        write("myTextfile.txt").push(KeyCode.ENTER);
 
-dependencies {
-    testCompile "junit:junit:4.10"
-    testCompile "org.testfx:testfx-core:4.0.+"
-    testCompile "org.testfx:testfx-legacy:4.0.+", {
-        exclude group: "junit", module: "junit"
+        // when:
+        drag(".file").dropTo("#trash-can");
+
+        // then:
+        assertThat(desktopPane).hasChildren(0, ".file");
+        // or (lookup by css id):
+        assertThat(lookup("#desktop").queryAs(DesktopPane.class)).hasChildren(0, ".file");
+        // or (look up css class):
+        assertThat(lookup(".desktop-pane").queryAs(DesktopPane.class)).hasChildren(0, ".file");
     }
 }
-~~~
+```
 
-Gradle `build.gradle` with `testfx-core` (SNAPSHOT) from Sonatype Snapshots repository (at https://oss.sonatype.org/content/repositories/snapshots/).
+## Example: JUnit 5 with Hamcrest Matchers
 
-~~~groovy
-repositories {
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+```java
+import org.testfx.framework.junit5.ApplicationTest;
+
+@ExtendWith(ApplicationExtension.class)
+class ClickableButtonTest {
+
+    @Start
+    void onStart(Stage stage) {
+        Button button = new Button("click me!");
+        button.setOnAction(actionEvent -> button.setText("clicked!"));
+        stage.setScene(new Scene(new StackPane(button), 100, 100));
+        stage.show();
+    }
+
+    @Test
+    void should_contain_button() {
+        // expect:
+        verifyThat(".button", hasText("click me!"));
+    }
+
+    @Test
+    void should_click_on_button(FxRobot robot) {
+        // when:
+        robot.clickOn(".button");
+
+        // then:
+        verifyThat(".button", hasText("clicked!"));
+    }
 }
+```
 
-dependencies {
-    testCompile "junit:junit:4.12"
-    testCompile "org.testfx:testfx-core:4.0.0-SNAPSHOT"
+## Example: JUnit 5 with AssertJ Assertions
+
+```java
+import org.testfx.framework.junit5.ApplicationTest;
+
+import static org.testfx.assertions.api.Assertions.assertThat;
+
+@ExtendWith(ApplicationExtension.class)
+class ClickableButtonTest {
+
+    Button button;
+
+    @Start
+    void onStart(Stage stage) {
+        button = new Button("click me!");
+        button.setId("myButton");
+        button.setOnAction(actionEvent -> button.setText("clicked!"));
+        stage.setScene(new Scene(new StackPane(button), 100, 100));
+        stage.show();
+    }
+
+    @Test
+    void should_contain_button() {
+        // expect:
+        assertThat(button).hasText("click me!");
+        // or (lookup by css id):
+        assertThat(lookup("#myButton").queryAs(Button.class)).hasText("click me!");
+        // or (lookup by css class):
+        assertThat(lookup(".button").queryAs(Button.class)).hasText("click me!");
+        // or (query specific type):
+        assertThat(lookup(".button").queryButton()).hasText("click me!");
+    }
+
+    @Test
+    void should_click_on_button(FxRobot robot) {
+        // when:
+        robot.clickOn(".button");
+
+        // then:
+        assertThat(button).hasText("clicked!");
+        // or (lookup by css id):
+        assertThat(lookup("#myButton").queryAs(Button.class)).hasText("clicked!");
+        // or (lookup by css class):
+        assertThat(lookup(".button").queryAs(Button.class)).hasText("clicked!");
+        // or (query specific type)
+        assertThat(lookup(".button").queryButton()).hasText("clicked!");
+    }
 }
-~~~
+```
 
-Maven `pom.xml` with `testfx-core` from Maven Central repository (at https://repo1.maven.org/maven2/).
+## Example: Spock with Hamcrest Matchers
 
-~~~xml
-<repositories>
-    <repository>
-        <id>maven-central-repo</id>
-        <url>http://repo1.maven.org/maven2</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>
-</repositories>
+```java
+import org.testfx.framework.spock.ApplicationSpec;
 
-<dependencies>
-    <dependency>
-        <groupId>org.testfx</groupId>
-        <artifactId>testfx-core</artifactId>
-        <version>4.0.1-alpha</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.testfx</groupId>
-        <artifactId>testfx-junit</artifactId>
-        <version>4.0.1-alpha</version>
-        <scope>test</scope>
-    </dependency>
-</dependencies>
-~~~
+class ClickableButtonSpec extends ApplicationSpec {
+    @Override
+    void init() throws Exception {
+        FxToolkit.registerStage { new Stage() }
+    }
 
-Maven `pom.xml` with `testfx-core` (SNAPSHOT) from Sonatype Snapshots repository (at https://oss.sonatype.org/content/repositories/snapshots/).
+     @Override
+    void start(Stage stage) {
+        Button button = new Button('click me!')
+        button.setOnAction { button.setText('clicked!') }
+        stage.setScene(new Scene(new StackPane(button), 100, 100))
+        stage.show()
+    }
 
-~~~xml
-<repositories>
-    <repository>
-        <id>maven-central-repo</id>
-        <url>http://repo1.maven.org/maven2</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>sonatype-snapshots-repo</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        <snapshots>
-            <enabled>true</enabled>
-       </snapshots>
-    </repository>
-</repositories>
+    @Override
+    void stop() throws Exception {
+        FxToolkit.hideStage()
+    }
 
-<dependencies>
-    <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.12</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.testfx</groupId>
-        <artifactId>testfx-core</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
-        <scope>test</scope>
-    </dependency>
-</dependencies>
-~~~
+    def "should contain button"() {
+        expect:
+        verifyThat('.button', hasText('click me!'))
+    }
 
+    def "should click on button"() {
+        when:
+        clickOn(".button")
+
+        then:
+        verifyThat('.button', hasText('clicked!'))
+    }
+}
+```
 
 ## Documentation
 
-- [How to use TestFX in your project][100]
-- [How to build and deploy TestFX][101]
-- [How to contribute][102]
+* [Javadocs](http://testfx.github.io/TestFX/docs/javadoc/) for latest `master`
+* The [wiki](https://github.com/TestFX/TestFX/wiki)
+* The changelog [CHANGES.md](https://github.com/TestFX/TestFX/blob/master/CHANGES.md)
 
-[100]: https://github.com/TestFX/TestFX/wiki/How-to-use-TestFX-in-your-project
-[101]: https://github.com/TestFX/TestFX/wiki/How-to-build-and-deploy-TestFX
-[102]: https://github.com/TestFX/TestFX/wiki/How-to-Contribute
+## Chat
 
+Head over to our [gitter chat](https://gitter.im/TestFX/TestFX) for discussion and questions.
 
-## Motivation
+## TestFX Legacy: Deprecated
 
-The motivation for creating TestFX was that the existing library for testing JavaFX, Jemmy, was too verbose and unwieldy. We wanted more behavior driven tests with easy-to-read code that our tester could follow and modify on her own.
-
-Today, TestFX is used in all of the about 100 automated GUI tests in LoadUI ([video][30]).
-
-- [Comparison with Jemmy][31], in the TestFX wiki.
-- *"Ten Man-Years of JavaFX: Real-World Project Experiences"*, conference session at [JavaZone][32] and [JavaOne][33].
-
-[30]: http://youtu.be/fgD8fBn1cYw "Video of the LoadUI TestFX test suite"
-[31]: https://github.com/TestFX/TestFX/wiki/Comparison-with-Jemmy "Comparison with Jemmy"
-[32]: http://jz13.java.no/presentation.html?id=89b56833 "Ten man-years of JavaFX: Real-world project experiences"
-[33]: https://oracleus.activeevents.com/2013/connect/sessionDetail.ww?SESSION_ID=2670 "Ten Man-Years of JavaFX: Real-World Project Experiences [CON2670]"
-
-
-## Similar Frameworks
-
-- [Jemmy][40], by the Oracle SQE team.
-- [Automaton][41], a new testing framework that supports JavaFX as well as Swing.
-- [MarvinFX][42], test support for JavaFX `Property`s.
-
-[40]: https://jemmy.java.net/
-[41]: https://github.com/renatoathaydes/Automaton
-[42]: http://www.guigarage.com/2013/03/introducing-marvinfx/
-
-
-## Mailing List
-
-Head over to [testfx-discuss@googlegroups.com][50] for discussions, questions and announcements.
-
-[50]: https://groups.google.com/d/forum/testfx-discuss
-
+The `testfx-legacy` subproject is deprecated and no longer supported. It is highly recommended
+that you switch from using `testfx-legacy`. If you want to continue using it you should cap
+the versions of `testfx-core` and `testfx-legacy` to `4.0.8-alpha`, which was the last released
+version of `testfx-legacy`. Using a newer version of `testfx-core` with an older version of
+`testfx-legacy` will very likely break (and does with `testfx-core` versions past `4.0.10-alpha`).
 
 ## Credits
 
-TestFX was initially created by @dainnilsson and @minisu as a part of LoadUI in 2012. Today, it is being extended and maintained by @hastebrot, @Philipp91, @minisu and the [other contributors][60].
-
-[60]: https://github.com/TestFX/TestFX/graphs/contributors "Contributors of TestFX"
-
-
-## License
-
-~~~
-Copyright 2013-2014 SmartBear Software
-Copyright 2014-2017 The TestFX Contributors
-
-Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
-European Commission - subsequent versions of the EUPL (the "Licence"); You may
-not use this work except in compliance with the Licence.
-
-You may obtain a copy of the Licence at:
-http://ec.europa.eu/idabc/eupl.html
-
-Unless required by applicable law or agreed to in writing, software distributed
-under the Licence is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR
-CONDITIONS OF ANY KIND, either express or implied. See the Licence for the
-specific language governing permissions and limitations under the Licence.
-~~~
+Thanks to all of the [contributors of TestFX](https://github.com/TestFX/TestFX/graphs/contributors)!

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,20 +16,9 @@
  */
 package org.testfx.api;
 
-import org.testfx.api.annotation.Unstable;
-
-@Unstable(reason = "class was recently added")
 public class FxRobotException extends RuntimeException {
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE STATIC FIELDS.
-    //---------------------------------------------------------------------------------------------
-
     private static final long serialVersionUID = 1L;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
 
     public FxRobotException(String message) {
         super(message);

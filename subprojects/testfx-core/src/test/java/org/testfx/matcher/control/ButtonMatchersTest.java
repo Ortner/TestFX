@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -23,22 +23,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.testfx.TestFXRule;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.rules.Timeout;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ButtonMatchersTest extends FxRobot {
 
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
+    public TestRule rule = RuleChain.outerRule(new TestFXRule()).around(Timeout.millis(3000));
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
-    public Button button;
+    Button button;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
@@ -56,37 +56,33 @@ public class ButtonMatchersTest extends FxRobot {
 
     @Test
     public void isCancelButton() {
-        // setup:
+        // given:
         button.setCancelButton(true);
 
-        // expect:
+        // then:
         assertThat(button, ButtonMatchers.isCancelButton());
     }
 
     @Test
     public void isCancelButton_fails() {
-        // expect:
-        exception.expect(AssertionError.class);
-        exception.expectMessage("Expected: Button is cancel button\n");
-
-        assertThat(button, ButtonMatchers.isCancelButton());
+        assertThatThrownBy(() -> assertThat(button, ButtonMatchers.isCancelButton()))
+                .isExactlyInstanceOf(AssertionError.class)
+                .hasMessageStartingWith("\nExpected: Button is cancel button\n");
     }
 
     @Test
     public void isDefaultButton() {
-        // setup:
+        // given:
         button.setDefaultButton(true);
 
-        // expect:
+        // then:
         assertThat(button, ButtonMatchers.isDefaultButton());
     }
 
     @Test
     public void isDefaultButton_fails() {
-        // expect:
-        exception.expect(AssertionError.class);
-        exception.expectMessage("Expected: Button is default button\n");
-
-        assertThat(button, ButtonMatchers.isDefaultButton());
+        assertThatThrownBy(() -> assertThat(button, ButtonMatchers.isDefaultButton()))
+                .isExactlyInstanceOf(AssertionError.class)
+                .hasMessageStartingWith("\nExpected: Button is default button\n");
     }
 }

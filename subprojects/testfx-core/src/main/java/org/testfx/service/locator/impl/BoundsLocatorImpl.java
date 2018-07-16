@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -22,16 +22,12 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Window;
 
-import org.testfx.api.annotation.Unstable;
 import org.testfx.service.locator.BoundsLocator;
 import org.testfx.service.locator.BoundsLocatorException;
 
-@Unstable
-public class BoundsLocatorImpl implements BoundsLocator {
+import static org.testfx.util.BoundsQueryUtils.scale;
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
+public class BoundsLocatorImpl implements BoundsLocator {
 
     @Override
     public Bounds boundsInSceneFor(Node node) {
@@ -41,18 +37,14 @@ public class BoundsLocatorImpl implements BoundsLocator {
 
     @Override
     public Bounds boundsInWindowFor(Scene scene) {
-        return new BoundingBox(
-            scene.getX(), scene.getY(),
-            scene.getWidth(), scene.getHeight()
-        );
+        return new BoundingBox(scene.getX(), scene.getY(), scene.getWidth(), scene.getHeight());
     }
 
     @Override
     public Bounds boundsInWindowFor(Bounds boundsInScene, Scene scene) {
         Bounds visibleBoundsInScene = limitToVisibleBounds(boundsInScene, scene);
         Bounds windowBounds = boundsInWindowFor(scene);
-        return translateBounds(visibleBoundsInScene,
-            windowBounds.getMinX(), windowBounds.getMinY());
+        return translateBounds(visibleBoundsInScene, windowBounds.getMinX(), windowBounds.getMinY());
     }
 
     @Override
@@ -80,24 +72,17 @@ public class BoundsLocatorImpl implements BoundsLocator {
     public Bounds boundsOnScreenFor(Bounds boundsInScene, Scene scene) {
         Bounds windowBounds = boundsInWindowFor(boundsInScene, scene);
         Window window = scene.getWindow();
-        return translateBounds(windowBounds, window.getX(), window.getY());
+        Bounds original = translateBounds(windowBounds, window.getX(), window.getY());
+        return scale(original);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
 
     private Bounds limitToVisibleBounds(Bounds boundsInScene, Scene scene) {
-        Bounds sceneBounds = makeSceneBounds(scene);
+        Bounds sceneBounds = new BoundingBox(0, 0, scene.getWidth(), scene.getHeight());
         Bounds visibleBounds = intersectBounds(boundsInScene, sceneBounds);
         if (!areBoundsVisible(visibleBounds)) {
-            throw new BoundsLocatorException("Bounds are not visible in Scene.");
+            throw new BoundsLocatorException("bounds are not visible in Scene");
         }
         return visibleBounds;
-    }
-
-    private Bounds makeSceneBounds(Scene scene) {
-        return new BoundingBox(0, 0, scene.getWidth(), scene.getHeight());
     }
 
     private Bounds intersectBounds(Bounds a, Bounds b) {
@@ -115,10 +100,8 @@ public class BoundsLocatorImpl implements BoundsLocator {
     }
 
     private Bounds translateBounds(Bounds bounds, double x, double y) {
-        return new BoundingBox(
-            bounds.getMinX() + x, bounds.getMinY() + y,
-            bounds.getWidth(), bounds.getHeight()
-        );
+        return new BoundingBox(bounds.getMinX() + x, bounds.getMinY() + y,
+                bounds.getWidth(), bounds.getHeight());
     }
 
 }

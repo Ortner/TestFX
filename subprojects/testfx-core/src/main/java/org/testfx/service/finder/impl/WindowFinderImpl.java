@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -29,23 +29,13 @@ import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import com.google.common.collect.ImmutableList;
-
 import org.testfx.service.finder.WindowFinder;
 
-import static org.testfx.service.adapter.JavaVersionAdapter.getWindows;
+import static org.testfx.internal.JavaVersionAdapter.getWindows;
 
 public class WindowFinderImpl implements WindowFinder {
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
-
     private Window lastTargetWindow;
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public Window targetWindow() {
@@ -79,8 +69,6 @@ public class WindowFinderImpl implements WindowFinder {
             .findFirst()
             .orElseThrow(NoSuchElementException::new);
     }
-
-    // Convenience methods:
 
     @Override
     public void targetWindow(int windowIndex) {
@@ -133,13 +121,9 @@ public class WindowFinderImpl implements WindowFinder {
         return window(node.getScene());
     }
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
-
     @SuppressWarnings("deprecation")
     private List<Window> fetchWindowsInQueue() {
-        return ImmutableList.copyOf(getWindows());
+        return Collections.unmodifiableList(getWindows());
     }
 
     private List<Window> fetchWindowsByProximityTo(Window targetWindow) {
@@ -147,15 +131,13 @@ public class WindowFinderImpl implements WindowFinder {
         return orderWindowsByProximityTo(targetWindow, windows);
     }
 
-    private List<Window> orderWindowsByProximityTo(Window targetWindow,
-                                                   List<Window> windows) {
+    private List<Window> orderWindowsByProximityTo(Window targetWindow, List<Window> windows) {
         List<Window> copy = new ArrayList<>(windows);
         copy.sort(Comparator.comparingInt(w -> calculateWindowProximityTo(targetWindow, w)));
         return Collections.unmodifiableList(copy);
     }
 
-    private int calculateWindowProximityTo(Window targetWindow,
-                                           Window window) {
+    private int calculateWindowProximityTo(Window targetWindow, Window window) {
         if (window == targetWindow) {
             return 0;
         }
@@ -165,8 +147,7 @@ public class WindowFinderImpl implements WindowFinder {
         return 2;
     }
 
-    private boolean isOwnerOf(Window window,
-                              Window targetWindow) {
+    private boolean isOwnerOf(Window window, Window targetWindow) {
         Window ownerWindow = retrieveOwnerOf(window);
         if (ownerWindow == targetWindow) {
             return true;
@@ -189,8 +170,7 @@ public class WindowFinderImpl implements WindowFinder {
             hasStageTitle((Stage) window, stageTitleRegex);
     }
 
-    private boolean hasStageTitle(Stage stage,
-                                  String stageTitleRegex) {
+    private boolean hasStageTitle(Stage stage, String stageTitleRegex) {
         return stage.getTitle() != null && stage.getTitle().matches(stageTitleRegex);
     }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -42,7 +42,7 @@ public interface PointQuery {
     Point2D getOffset();
 
     /**
-     * Updates {@link #getPosition()} to the new {@code position}
+     * Updates {@link #getPosition()} to the new {@code position}.
      *
      * @param position the new position
      * @return itself
@@ -50,7 +50,7 @@ public interface PointQuery {
     PointQuery atPosition(Point2D position);
 
     /**
-     * Updates {@link #getPosition()} to the new {@code position}
+     * Updates {@link #getPosition()} to the new {@code position}.
      *
      * @param positionX the percentage to use: 0.0 (0%) to 1.0 (100%).
      * @param positionY the percentage to use: 0.0 (0%) to 1.0 (100%).
@@ -70,7 +70,7 @@ public interface PointQuery {
      * Updates {@link #getOffset()} to be
      * {@code new Point2D(this.offset.getX() + offset.getX(), this.offset.getY() + offset.getY())}.
      *
-     * @param offset the amount by which to increase/decrease the offset's x & y values
+     * @param offset the amount by which to increase/decrease the offset's x and y values
      * @return itself
      */
     PointQuery atOffset(Point2D offset);

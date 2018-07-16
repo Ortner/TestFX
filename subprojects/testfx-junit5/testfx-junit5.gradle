@@ -14,31 +14,75 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the Licence for the
  * specific language governing permissions and limitations under the Licence.
  */
+ext.pomDescription = 'TestFX JUnit5'
+ext.moduleName = 'org.testfx.junit5'
 
-ext.pomDescription = "TestFX JUnit5"
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-RC2'
-    }
+test {
+  useJUnitPlatform()
 }
-
-apply plugin: 'org.junit.platform.gradle.plugin'
 
 dependencies {
     compile project(":testfx-core")
 
-    providedCompile 'org.junit.jupiter:junit-jupiter-api:5.0.0-RC2'
+    // Removes compile warnings about missing enums.
+    compile('org.apiguardian:apiguardian-api:1.0.0')
 
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.0-RC2'
-
-    testCompile "org.hamcrest:hamcrest-library:1.3"
-    if (usingJava9) {
+    compile 'org.junit.jupiter:junit-jupiter-api:5.2.0-M1'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.2.0-M1'
+    if (JavaVersion.current().isJava9Compatible()) {
         testCompile "org.testfx:openjfx-monocle:jdk-9+181"
     } else {
         testCompile "org.testfx:openjfx-monocle:8u76-b04"
+    }
+}
+
+sourceSets {
+    if (!JavaVersion.current().isJava9Compatible()) {
+        main {
+            java {
+                exclude '**/module-info.java'
+            }
+        }
+    }
+}
+
+compileJava {
+    if (JavaVersion.current().isJava9Compatible()) {
+        inputs.property("moduleName", moduleName)
+        doFirst {
+            options.compilerArgs = [
+                    '--module-path', classpath.asPath,
+            ]
+            classpath = files()
+        }
+
+        javadoc {
+            exclude "**/module-info.java"
+            options.addStringOption('-module-path', classpath.asPath)
+        }
+    }
+}
+
+compileTestJava {
+    if (JavaVersion.current().isJava9Compatible()) {
+        inputs.property("moduleName", moduleName)
+        doFirst {
+            options.compilerArgs = [
+                    '--module-path', classpath.asPath,
+                    '--add-modules', 'org.junit.jupiter.api,javafx.controls',
+                    '--add-reads', "$moduleName=org.junit.jupiter.api",
+                    '--add-reads', "$moduleName=javafx.controls",
+                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
+            ]
+            classpath = files()
+        }
+    }
+}
+
+jar {
+    inputs.property("moduleName", moduleName)
+
+    manifest {
+        attributes('Automatic-Module-Name': moduleName)
     }
 }

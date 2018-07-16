@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -43,22 +43,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.service.locator.PointLocator;
 import org.testfx.service.locator.impl.BoundsLocatorImpl;
 import org.testfx.service.locator.impl.PointLocatorImpl;
+import org.testfx.util.WaitForAsyncUtils;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -69,17 +69,16 @@ public class AwtRobotAdapterTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
-    public AwtRobotAdapter robotAdapter;
 
-    public Stage targetStage;
-    public Parent sceneRoot;
-
-    public Region region;
-    public Point2D regionPoint;
+    AwtRobotAdapter robotAdapter;
+    Stage targetStage;
+    Parent sceneRoot;
+    Region region;
+    Point2D regionPoint;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
-        assumeFalse("Cannot run AwtRobotAdapterTest in headless environment",
+        assumeFalse("skipping AwtRobotAdapterTest - in headless environment",
             GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance());
         FxToolkit.registerPrimaryStage();
     }
@@ -160,7 +159,7 @@ public class AwtRobotAdapterTest {
         robotAdapter.keyPress(KeyCode.A);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(keyEventHandler, times(1)).handle(any());
     }
 
@@ -179,7 +178,7 @@ public class AwtRobotAdapterTest {
         robotAdapter.keyRelease(KeyCode.A);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(keyEventHandler, times(1)).handle(any());
     }
 
@@ -191,8 +190,8 @@ public class AwtRobotAdapterTest {
         Point2D mouseLocation = robotAdapter.getMouseLocation();
 
         // then:
-        assertThat(mouseLocation.getX(), is(greaterThanOrEqualTo(0.0)));
-        assertThat(mouseLocation.getY(), is(greaterThanOrEqualTo(0.0)));
+        assertThat("mouseLocation.getX() is greater than or equal to 0.0", mouseLocation.getX() >= 0.0);
+        assertThat("mouseLocation.getY() is greater than or equal to 0.0", mouseLocation.getY() >= 0.0);
     }
 
     @Test
@@ -201,7 +200,7 @@ public class AwtRobotAdapterTest {
         robotAdapter.mouseMove(new Point2D(100, 200));
 
         // when:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         Point2D mouseLocation = robotAdapter.getMouseLocation();
 
         // then:
@@ -223,7 +222,7 @@ public class AwtRobotAdapterTest {
         robotAdapter.mousePress(MouseButton.PRIMARY);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(mouseEventHandler, times(1)).handle(any());
     }
 
@@ -242,7 +241,7 @@ public class AwtRobotAdapterTest {
         robotAdapter.mouseRelease(MouseButton.PRIMARY);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(mouseEventHandler, times(1)).handle(any());
     }
 
@@ -285,7 +284,7 @@ public class AwtRobotAdapterTest {
             sleep(100, TimeUnit.MILLISECONDS);
             asyncFx(() -> reachedStatement.set(true));
         });
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
 
         // then:
         assertThat(reachedStatement.get(), is(true));

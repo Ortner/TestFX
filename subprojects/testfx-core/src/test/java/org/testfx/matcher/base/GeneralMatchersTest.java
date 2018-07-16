@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,6 +16,7 @@
  */
 package org.testfx.matcher.base;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -27,31 +28,23 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.testfx.TestFXRule;
+import org.junit.rules.TestRule;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GeneralMatchersTest {
 
-    public Node nullNode;
-
-    public Pane notMatchingNode;
-
-    public Button notParentNode;
-
-    public Predicate<Node> notNullNodePredicate =
-        node -> node != null;
-
-    public Predicate<Parent> hasChildrenParentPredicate =
-        parent -> parent.getChildrenUnmodifiable().size() > 0;
-
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
+    public TestRule rule = new TestFXRule();
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+    Node nullNode;
+    Pane notMatchingNode;
+    Button notParentNode;
+    Predicate<Node> notNullNodePredicate = Objects::nonNull;
+    Predicate<Parent> hasChildrenParentPredicate = parent -> parent.getChildrenUnmodifiable().size() > 0;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
@@ -71,11 +64,11 @@ public class GeneralMatchersTest {
             "Node is not null", notNullNodePredicate
         );
 
-        // expect:
-        exception.expect(AssertionError.class);
-        exception.expectMessage("Expected: Node is not null\n" +
-                                "     but: was null");
-        assertThat(nullNode, notNullNodeMatcher);
+        // then:
+        assertThatThrownBy(() -> assertThat(nullNode, notNullNodeMatcher))
+                .isExactlyInstanceOf(AssertionError.class)
+                .hasMessage("\nExpected: Node is not null\n" +
+                        "     but: was null");
     }
 
     @Test
@@ -85,11 +78,11 @@ public class GeneralMatchersTest {
             Parent.class, "has children", hasChildrenParentPredicate
         );
 
-        // expect:
-        exception.expect(AssertionError.class);
-        exception.expectMessage("Expected: Parent has children\n" +
-                                "     but: was <" + notMatchingNode.toString() + ">");
-        assertThat(notMatchingNode, hasChildrenParentMatcher);
+        // then:
+        assertThatThrownBy(() -> assertThat(notMatchingNode, hasChildrenParentMatcher))
+                .isExactlyInstanceOf(AssertionError.class)
+                .hasMessage("\nExpected: Parent has children\n" +
+                        "     but: was <" + notMatchingNode.toString() + ">");
     }
 
     @Test
@@ -100,13 +93,11 @@ public class GeneralMatchersTest {
         );
 
         // expect:
-        exception.expect(AssertionError.class);
-        exception.expectMessage("Expected: Parent has children\n" +
-                                "     but: was null");
-        assertThat(nullNode, hasChildrenParentMatcher);
+        assertThatThrownBy(() -> assertThat(nullNode, hasChildrenParentMatcher))
+                .isExactlyInstanceOf(AssertionError.class)
+                .hasMessage("\nExpected: Parent has children\n" +
+                        "     but: was null");
     }
-
-    // java.lang.ClassCastException: javafx.scene.control.Button cannot be cast to javafx.scene.control.TreeView
 
     @Test
     public void typeSafeMatcher_with_notParentNode() {
@@ -115,12 +106,12 @@ public class GeneralMatchersTest {
             Parent.class, "has children", hasChildrenParentPredicate
         );
 
-        // expect:
+        // then:
         // TODO: Hint expected type on AssertError explicitly.
-        exception.expect(AssertionError.class);
-        exception.expectMessage("Expected: Parent has children\n" +
-                                "     but: was <" + notParentNode.toString() + ">");
-        assertThat(notParentNode, hasChildrenParentMatcher);
+        assertThatThrownBy(() -> assertThat(notParentNode, hasChildrenParentMatcher))
+                .isExactlyInstanceOf(AssertionError.class)
+                .hasMessage("\nExpected: Parent has children\n" +
+                        "     but: was <" + notParentNode.toString() + ">");
     }
 
 }

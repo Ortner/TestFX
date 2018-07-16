@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -19,27 +19,30 @@ package org.testfx.robot.impl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.rules.Timeout;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.robot.BaseRobot;
 import org.testfx.robot.KeyboardRobot;
 
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.B;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-public final class KeyboardRobotImplTest {
+public class KeyboardRobotImplTest {
 
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
-    public KeyboardRobot keyboardRobot;
+    public TestRule rule = RuleChain.outerRule(new TestFXRule()).around(Timeout.millis(3000));
 
-    public BaseRobot baseRobot;
+    KeyboardRobot keyboardRobot;
+    BaseRobot baseRobot;
 
     @Before
     public void setup() {
@@ -54,7 +57,6 @@ public final class KeyboardRobotImplTest {
 
         // then:
         verify(baseRobot, times(1)).pressKeyboard(eq(A));
-        verify(baseRobot, times(1)).awaitEvents();
         verifyNoMoreInteractions(baseRobot);
     }
 
@@ -66,7 +68,6 @@ public final class KeyboardRobotImplTest {
         // then:
         verify(baseRobot, times(1)).pressKeyboard(eq(A));
         verify(baseRobot, times(1)).pressKeyboard(eq(B));
-        verify(baseRobot, times(1)).awaitEvents();
         verifyNoMoreInteractions(baseRobot);
     }
 
@@ -81,7 +82,6 @@ public final class KeyboardRobotImplTest {
 
         // then:
         verify(baseRobot, times(1)).releaseKeyboard(A);
-        verify(baseRobot, times(1)).awaitEvents();
         verifyNoMoreInteractions(baseRobot);
     }
 
@@ -97,7 +97,6 @@ public final class KeyboardRobotImplTest {
         // then:
         verify(baseRobot, times(1)).releaseKeyboard(B);
         verify(baseRobot, times(1)).releaseKeyboard(A);
-        verify(baseRobot, times(1)).awaitEvents();
         verifyNoMoreInteractions(baseRobot);
     }
 
@@ -108,7 +107,6 @@ public final class KeyboardRobotImplTest {
 
         // then:
         verify(baseRobot, times(0)).releaseKeyboard(A);
-        verify(baseRobot, times(1)).awaitEvents();
         verifyNoMoreInteractions(baseRobot);
     }
 
@@ -123,7 +121,6 @@ public final class KeyboardRobotImplTest {
 
         // then:
         verify(baseRobot, times(1)).releaseKeyboard(A);
-        verify(baseRobot, times(1)).awaitEvents();
         verifyNoMoreInteractions(baseRobot);
     }
 

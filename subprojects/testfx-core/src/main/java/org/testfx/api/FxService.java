@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,33 +16,17 @@
  */
 package org.testfx.api;
 
-import org.testfx.api.annotation.Unstable;
-
 /**
  * Wrapper class that holds a static {@link FxServiceContext} via {@link #serviceContext()} that is lazily created.
  */
-@Unstable(reason = "class was recently added")
 public final class FxService {
 
-    //---------------------------------------------------------------------------------------------
-    // STATIC FIELDS.
-    //---------------------------------------------------------------------------------------------
-
     private static FxServiceContext context;
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
 
     private FxService() {
         throw new UnsupportedOperationException();
     }
 
-    //---------------------------------------------------------------------------------------------
-    // STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    @Unstable(reason = "is missing apidocs")
     public static FxServiceContext serviceContext() {
         if (context == null) {
             context = new FxServiceContext();

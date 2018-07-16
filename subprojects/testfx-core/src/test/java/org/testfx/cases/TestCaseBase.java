@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,10 +21,6 @@ import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 
 public abstract class TestCaseBase extends FxRobot {
-
-    //---------------------------------------------------------------------------------------------
-    // STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @BeforeClass
     public static void baseSetupSpec() throws Exception {

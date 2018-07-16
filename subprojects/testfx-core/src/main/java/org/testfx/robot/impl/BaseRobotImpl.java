@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,7 +16,6 @@
  */
 package org.testfx.robot.impl;
 
-import java.util.Objects;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -24,53 +23,33 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 
-import org.testfx.api.annotation.Unstable;
 import org.testfx.robot.BaseRobot;
 import org.testfx.service.adapter.RobotAdapter;
 import org.testfx.service.adapter.impl.AwtRobotAdapter;
 import org.testfx.service.adapter.impl.GlassRobotAdapter;
 import org.testfx.service.adapter.impl.JavafxRobotAdapter;
 
-@Unstable(reason = "needs more tests")
 public class BaseRobotImpl implements BaseRobot {
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTANTS.
-    //---------------------------------------------------------------------------------------------
-
-    private static final String PROPERTY_TESTFX_ROBOT = "testfx.robot";
-    private static final String PROPERTY_TESTFX_ROBOT_AWT = "awt";
-    private static final String PROPERTY_TESTFX_ROBOT_GLASS = "glass";
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
 
     private final RobotAdapter robotAdapter;
     private final JavafxRobotAdapter javafxRobotAdapter;
 
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
-
     public BaseRobotImpl() {
-        String robotAdapterName = System.getProperty(PROPERTY_TESTFX_ROBOT, PROPERTY_TESTFX_ROBOT_AWT);
-        if (isAwtRobotAdapter(robotAdapterName)) {
-            robotAdapter = new AwtRobotAdapter();
-        }
-        else if (isGlassRobotAdapter(robotAdapterName)) {
-            robotAdapter = new GlassRobotAdapter();
-        }
-        else {
-            throw new IllegalStateException("Unknown robot adapter " +
-                "'" + PROPERTY_TESTFX_ROBOT + "=" + robotAdapterName + "'");
+        // Default to awt if "testfx.robot" is not explicitly set.
+        String robotAdapterName = System.getProperty("testfx.robot", "awt");
+        switch (robotAdapterName) {
+            case "awt":
+                robotAdapter = new AwtRobotAdapter();
+                break;
+            case "glass":
+                robotAdapter = new GlassRobotAdapter();
+                break;
+            default:
+                throw new IllegalStateException(String.format(
+                        "unknown robot adapter 'testfx.robot=%s' (must be 'awt' or 'glass')", robotAdapterName));
         }
         javafxRobotAdapter = new JavafxRobotAdapter();
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public void pressKeyboard(KeyCode key) {
@@ -83,9 +62,7 @@ public class BaseRobotImpl implements BaseRobot {
     }
 
     @Override
-    public void typeKeyboard(Scene scene,
-                             KeyCode key,
-                             String character) {
+    public void typeKeyboard(Scene scene, KeyCode key, String character) {
         // KeyEvent: "For key typed events, {@code code} is always {@code KeyCode.UNDEFINED}."
         javafxRobotAdapter.robotCreate(scene);
         javafxRobotAdapter.keyPress(key);
@@ -121,23 +98,6 @@ public class BaseRobotImpl implements BaseRobot {
     @Override
     public Image captureRegion(Rectangle2D region) {
         return robotAdapter.getCaptureRegion(region);
-    }
-
-    @Override
-    public void awaitEvents() {
-        robotAdapter.timerWaitForIdle();
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    private boolean isAwtRobotAdapter(String robotAdapterName) {
-        return Objects.equals(robotAdapterName, PROPERTY_TESTFX_ROBOT_AWT);
-    }
-
-    private boolean isGlassRobotAdapter(String robotAdapterName) {
-        return Objects.equals(robotAdapterName, PROPERTY_TESTFX_ROBOT_GLASS);
     }
 
 }

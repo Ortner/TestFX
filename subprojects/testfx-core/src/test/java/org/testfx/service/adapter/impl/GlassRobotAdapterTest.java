@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -18,7 +18,9 @@ package org.testfx.service.adapter.impl;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -42,21 +44,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.service.locator.PointLocator;
 import org.testfx.service.locator.impl.BoundsLocatorImpl;
 import org.testfx.service.locator.impl.PointLocatorImpl;
+import org.testfx.util.BoundsQueryUtils;
+import org.testfx.util.WaitForAsyncUtils;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assume.assumeThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,19 +70,15 @@ public class GlassRobotAdapterTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
-    public GlassRobotAdapter robotAdapter;
 
-    public Stage targetStage;
-    public Parent sceneRoot;
-
-    public Region region;
-    public Point2D regionPoint;
+    GlassRobotAdapter robotAdapter;
+    Stage targetStage;
+    Parent sceneRoot;
+    Region region;
+    Point2D regionCenter;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
-        //System.setProperty("testfx.robot", "glass");
-        //System.setProperty("testfx.headless", "true");
-        //System.setProperty("prism.order", "sw");
         FxToolkit.registerPrimaryStage();
     }
 
@@ -102,7 +101,7 @@ public class GlassRobotAdapterTest {
         });
 
         PointLocator pointLocator = new PointLocatorImpl(new BoundsLocatorImpl());
-        regionPoint = pointLocator.point(region).atPosition(Pos.CENTER).query();
+        regionCenter = pointLocator.point(region).atPosition(Pos.CENTER).query();
     }
 
     @After
@@ -110,8 +109,6 @@ public class GlassRobotAdapterTest {
         robotAdapter.keyRelease(KeyCode.A);
         robotAdapter.mouseRelease(MouseButton.PRIMARY);
     }
-
-    // ROBOT.
 
     @Test
     public void robotCreate() {
@@ -143,8 +140,6 @@ public class GlassRobotAdapterTest {
         assertThat(robotAdapter.getRobotInstance(), nullValue());
     }
 
-    // KEY.
-
     @Test
     @SuppressWarnings("unchecked")
     public void keyPress() {
@@ -153,13 +148,13 @@ public class GlassRobotAdapterTest {
         targetStage.addEventHandler(KeyEvent.KEY_PRESSED, keyEventHandler);
 
         // and:
-        robotAdapter.mouseMove(regionPoint);
+        robotAdapter.mouseMove(regionCenter);
 
         // when:
         robotAdapter.keyPress(KeyCode.A);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(keyEventHandler, times(1)).handle(any());
     }
 
@@ -171,18 +166,16 @@ public class GlassRobotAdapterTest {
         targetStage.addEventHandler(KeyEvent.KEY_RELEASED, keyEventHandler);
 
         // and:
-        robotAdapter.mouseMove(regionPoint);
+        robotAdapter.mouseMove(regionCenter);
 
         // when:
         robotAdapter.keyPress(KeyCode.A);
         robotAdapter.keyRelease(KeyCode.A);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(keyEventHandler, times(1)).handle(any());
     }
-
-    // MOUSE.
 
     @Test
     public void getMouseLocation() {
@@ -190,17 +183,19 @@ public class GlassRobotAdapterTest {
         Point2D mouseLocation = robotAdapter.getMouseLocation();
 
         // then:
-        assertThat(mouseLocation.getX(), is(greaterThanOrEqualTo(0.0)));
-        assertThat(mouseLocation.getY(), is(greaterThanOrEqualTo(0.0)));
+        assertThat("mouseLocation.getX() is greater than or equal to 0.0", mouseLocation.getX() >= 0.0);
+        assertThat("mouseLocation.getY() is greater than or equal to 0.0", mouseLocation.getY() >= 0.0);
     }
 
     @Test
     public void mouseMove() {
+        assumeThat("skipping: Robot's mouseMove broken on Windows + HiDPI (JDK-8196031)",
+                System.getProperty("glass.win.uiScale", "100%"), is(equalTo("100%")));
         // given:
         robotAdapter.mouseMove(new Point2D(100, 200));
 
         // when:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         Point2D mouseLocation = robotAdapter.getMouseLocation();
 
         // then:
@@ -216,13 +211,13 @@ public class GlassRobotAdapterTest {
         region.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEventHandler);
 
         // and:
-        robotAdapter.mouseMove(regionPoint);
+        robotAdapter.mouseMove(regionCenter);
 
         // when:
         robotAdapter.mousePress(MouseButton.PRIMARY);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(mouseEventHandler, times(1)).handle(any());
     }
 
@@ -234,26 +229,25 @@ public class GlassRobotAdapterTest {
         region.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEventHandler);
 
         // and:
-        robotAdapter.mouseMove(regionPoint);
+        robotAdapter.mouseMove(regionCenter);
 
         // when:
         robotAdapter.mousePress(MouseButton.PRIMARY);
         robotAdapter.mouseRelease(MouseButton.PRIMARY);
 
         // then:
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
         verify(mouseEventHandler, times(1)).handle(any());
     }
-
-    // CAPTURE.
 
     @Test
     public void getCapturePixelColor() {
         // given:
         assumeThat(System.getenv("TRAVIS_OS_NAME"), is(not(equalTo("osx"))));
+        assumeThat(System.getProperty("prism.order", ""), is(not(equalTo("d3d"))));
 
         // when:
-        Color pixelColor = robotAdapter.getCapturePixelColor(regionPoint);
+        Color pixelColor = robotAdapter.getCapturePixelColor(regionCenter);
 
         // then:
         assertThat(pixelColor, is(Color.web("magenta")));
@@ -263,18 +257,17 @@ public class GlassRobotAdapterTest {
     public void getCaptureRegion() {
         // given:
         assumeThat(System.getenv("TRAVIS_OS_NAME"), is(not(equalTo("osx"))));
+        assumeThat(System.getProperty("prism.order", ""), is(not(equalTo("d3d"))));
 
         // when:
-        Rectangle2D region = new Rectangle2D(regionPoint.getX(), regionPoint.getY(), 10, 20);
-        Image regionImage = robotAdapter.getCaptureRegion(region);
+        Bounds bounds = BoundsQueryUtils.boundsOnScreen(region);
+        Image regionImage = robotAdapter.getCaptureRegion(new Rectangle2D(bounds.getMinX(), bounds.getMinY(),
+                bounds.getWidth(), bounds.getHeight()));
 
         // then:
-        assertThat(regionImage.getWidth(), is(10.0));
-        assertThat(regionImage.getHeight(), is(20.0));
-        assertThat(regionImage.getPixelReader().getColor(5, 10), is(Color.web("magenta")));
+        assertThat(regionImage.getPixelReader().getColor((int) regionImage.getWidth() / 2,
+                (int) regionImage.getHeight() / 2), is(Color.web("magenta")));
     }
-
-    // TIMER.
 
     @Test
     public void timerWaitForIdle() {
@@ -284,7 +277,7 @@ public class GlassRobotAdapterTest {
             sleep(100, TimeUnit.MILLISECONDS);
             asyncFx(() -> reachedStatement.set(true));
         });
-        robotAdapter.timerWaitForIdle();
+        WaitForAsyncUtils.waitForFxEvents();
 
         // then:
         assertThat(reachedStatement.get(), is(true));

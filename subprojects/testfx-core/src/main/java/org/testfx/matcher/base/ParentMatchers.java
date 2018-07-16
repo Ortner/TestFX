@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,54 +16,54 @@
  */
 package org.testfx.matcher.base;
 
+import java.util.stream.Collectors;
+
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
-import org.testfx.api.annotation.Unstable;
 
 import static org.testfx.matcher.base.GeneralMatchers.typeSafeMatcher;
 
 /**
- * TestFX matchers for {@link Parent}.
+ * TestFX matchers for {@link Parent} nodes.
  */
-@Unstable(reason = "needs more tests")
 public class ParentMatchers {
 
-    //---------------------------------------------------------------------------------------------
-    // STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
+    private ParentMatchers() {}
 
     /**
      * Creates a matcher that matches all {@link Parent}s that have at least one child.
      */
     @Factory
-    public static Matcher<Node> hasChild() {
-        String descriptionText = "has child";
-        return typeSafeMatcher(Parent.class, descriptionText, ParentMatchers::hasChild);
+    public static Matcher<Parent> hasChild() {
+        String descriptionText = "has at least one child";
+        return typeSafeMatcher(Parent.class, descriptionText,
+            parent -> toText(parent.getChildrenUnmodifiable()),
+            parent -> !parent.getChildrenUnmodifiable().isEmpty());
     }
 
     /**
      * Creates a matcher that matches all {@link Parent}s that have exactly {@code amount} children.
      */
     @Factory
-    public static Matcher<Node> hasChildren(int amount) {
-        String descriptionText = "has " + amount + " children";
-        return typeSafeMatcher(Parent.class, descriptionText, node -> hasChildren(amount, node));
+    public static Matcher<Parent> hasChildren(int amount) {
+        String descriptionText = "has exactly " + amount + " children";
+        return typeSafeMatcher(Parent.class, descriptionText,
+            parent -> toText(parent.getChildrenUnmodifiable()),
+            parent -> parent.getChildrenUnmodifiable().size() == amount);
     }
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    private static boolean hasChild(Parent parent) {
-        return !parent.getChildrenUnmodifiable().isEmpty();
-    }
-
-    private static boolean hasChildren(int amount,
-                                       Parent parent) {
-        return parent.getChildrenUnmodifiable().size() == amount;
+    private static String toText(ObservableList<Node> children) {
+        if (children.isEmpty()) {
+            return "empty (contained no children)";
+        } else {
+            return '[' + children.stream().map(node -> node.getClass().getSimpleName())
+                    .collect(Collectors.joining(", ")) + ']' +
+                    " (which has " + children.size() + ' ' + (children.size() == 1 ? "child" : "children") + ')';
+        }
     }
 
 }

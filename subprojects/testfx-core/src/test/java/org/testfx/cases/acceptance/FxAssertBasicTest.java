@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -24,25 +24,26 @@ import javafx.stage.Stage;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.cases.TestCaseBase;
+import org.testfx.framework.junit.TestFXRule;
+import org.testfx.service.query.EmptyNodeQueryException;
 
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.CoreMatchers.not;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.setupApplication;
-import static org.testfx.matcher.base.NodeMatchers.hasText;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isInvisible;
 import static org.testfx.matcher.base.NodeMatchers.isNotNull;
-import static org.testfx.matcher.base.NodeMatchers.isNull;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import static org.testfx.matcher.control.LabeledMatchers.hasText;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
 
 public class FxAssertBasicTest extends TestCaseBase {
 
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
+    public TestFXRule testFXRule = new TestFXRule(3);
 
     @Before
     public void setup() throws Exception {
@@ -50,20 +51,18 @@ public class FxAssertBasicTest extends TestCaseBase {
     }
 
     @Test
-    public void missing_is_null() {
-        // expect:
-        verifyThat("#missing", isNull(), informedErrorMessage(this));
+    public void empty_query_throws_exception() {
+        assertThatThrownBy(() -> verifyThat("#missing", isNotNull()))
+                .isExactlyInstanceOf(EmptyNodeQueryException.class);
     }
 
     @Test
     public void button_is_not_null() {
-        // expect:
         verifyThat("#button", isNotNull(), informedErrorMessage(this));
     }
 
     @Test
     public void button_is_enabled() {
-        // expect:
         verifyThat("#button", isEnabled(), informedErrorMessage(this));
     }
 
@@ -78,7 +77,6 @@ public class FxAssertBasicTest extends TestCaseBase {
 
     @Test
     public void button_is_visible() {
-        // expect:
         verifyThat("#button", isVisible(), informedErrorMessage(this));
     }
 
@@ -95,25 +93,15 @@ public class FxAssertBasicTest extends TestCaseBase {
     public void button_has_label() {
         // when:
         clickOn("#button");
-        
+
         // then:
         verifyThat("#button", hasText("clicked!"), informedErrorMessage(this));
     }
 
     @Test
     public void button_has_not_label() {
-        // expect:
         verifyThat("#button", not(hasText("clicked!")), informedErrorMessage(this));
     }
-
-    //@Test
-    //public void foo() {
-    //    verifyThat("#button", nodeMatcher(TreeView.class, "is true", (TreeView input) -> true));
-    //}
-
-    //---------------------------------------------------------------------------------------------
-    // TEST FIXTURES.
-    //---------------------------------------------------------------------------------------------
 
     public static class DemoApplication extends Application {
         @Override

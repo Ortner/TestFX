@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -32,16 +32,16 @@ import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
 import org.testfx.cases.TestCaseBase;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.service.support.FiredEvents;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.DebugUtils.compose;
 import static org.testfx.util.DebugUtils.insertHeader;
@@ -94,12 +94,7 @@ public class DebugUtilsTest extends TestCaseBase {
         String other = "other";
 
         // when:
-        AssertionError error = getThrownErrorPostMapper(
-            compose(
-                sb -> sb.append(text),
-                sb -> sb.append(other)
-            )
-        );
+        AssertionError error = getThrownErrorPostMapper(compose(sb -> sb.append(text), sb -> sb.append(other)));
 
         // then:
         assertThat(error.getMessage(), equalTo(text + other));
@@ -111,9 +106,7 @@ public class DebugUtilsTest extends TestCaseBase {
         SimpleBooleanProperty prop = new SimpleBooleanProperty(false);
 
         // when:
-        getThrownErrorPostMapper(
-            runCode(() -> prop.set(true))
-        );
+        getThrownErrorPostMapper(runCode(() -> prop.set(true)));
 
         // then:
         assertThat(prop.get(), is(true));
@@ -132,12 +125,10 @@ public class DebugUtilsTest extends TestCaseBase {
     }
 
     @Test
-    public void showPressedMouseButtonsInErrorMessage() throws TimeoutException {
+    public void showPressedMouseButtonsInErrorMessage() {
         // given:
         Stage stage = FxToolkit.toolkitContext().getRegisteredStage();
-        moveTo(stage)
-            .moveBy(10, 10)
-            .press(MOUSE_BUTTON);
+        moveTo(stage).moveBy(10, 10).press(MOUSE_BUTTON);
 
         // when:
         AssertionError error = getThrownErrorPostMapper(showMouseButtonsPressedAtTestFailure(this, INDENT));
@@ -147,12 +138,10 @@ public class DebugUtilsTest extends TestCaseBase {
     }
 
     @Test
-    public void showPressedKeysInErrorMessage() throws TimeoutException {
+    public void showPressedKeysInErrorMessage() {
         // given:
         Stage stage = FxToolkit.toolkitContext().getRegisteredStage();
-        moveTo(stage)
-            .moveBy(10, 10)
-            .press(KEY);
+        moveTo(stage).moveBy(10, 10).press(KEY);
 
         // when:
         AssertionError error = getThrownErrorPostMapper(showKeysPressedAtTestFailure(this, INDENT));
@@ -201,9 +190,7 @@ public class DebugUtilsTest extends TestCaseBase {
             }
 
             @Override
-            public void describeTo(Description description) {
-
-            }
+            public void describeTo(Description description) {}
         };
     }
 

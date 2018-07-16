@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -14,46 +14,31 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the Licence for the
  * specific language governing permissions and limitations under the Licence.
  */
-package org.testfx.framework.spock;
+package org.testfx.framework.spock
 
-import javafx.application.Application;
-import javafx.stage.Stage;
+import javafx.application.Application
+import javafx.stage.Stage
 
-public final class ApplicationAdapter extends Application implements ApplicationFixture {
+final class ApplicationAdapter extends Application implements ApplicationFixture {
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
-
-    private ApplicationFixture applicationFixture;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
+    private final ApplicationFixture applicationFixture
 
     ApplicationAdapter(ApplicationFixture applicationFixture) {
-        this.applicationFixture = applicationFixture;
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    @Override
-    public void init()
-            throws Exception {
-        applicationFixture.init();
+        this.applicationFixture = applicationFixture
     }
 
     @Override
-    public void start(Stage primaryStage)
-            throws Exception {
-        applicationFixture.start(primaryStage);
+    void init() throws Exception {
+        applicationFixture.init()
     }
 
     @Override
-    public void stop()
-            throws Exception {
-        applicationFixture.stop();
+    void start(Stage primaryStage) throws Exception {
+        applicationFixture.start(primaryStage)
+    }
+
+    @Override
+    void stop() throws Exception {
+        applicationFixture.stop()
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,13 +21,13 @@ import javafx.scene.input.MouseButton;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.robot.DragRobot;
 import org.testfx.robot.MouseRobot;
 import org.testfx.robot.MoveRobot;
 import org.testfx.service.query.PointQuery;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -35,14 +35,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-public final class DragRobotImplTest {
+public class DragRobotImplTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
-    public DragRobot dragRobot;
 
-    public MouseRobot mouseRobot;
-    public MoveRobot moveRobot;
+    DragRobot dragRobot;
+    MouseRobot mouseRobot;
+    MoveRobot moveRobot;
 
     @Before
     public void setup() {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -43,7 +43,6 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Window;
 
 import org.hamcrest.Matcher;
-import org.testfx.api.annotation.Unstable;
 import org.testfx.robot.Motion;
 import org.testfx.service.locator.PointLocator;
 import org.testfx.service.query.BoundsQuery;
@@ -57,30 +56,16 @@ import static org.testfx.util.WaitForAsyncUtils.asyncFx;
 import static org.testfx.util.WaitForAsyncUtils.waitFor;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
-@Unstable(reason = "class was recently added")
 public class FxRobot implements FxRobotInterface {
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
-
     private final FxRobotContext context;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
 
     /**
      * Constructs all robot-related implementations and sets {@link #targetPos(Pos)} to {@link Pos#CENTER}.
      */
     public FxRobot() {
         context = new FxRobotContext();
-        context.setPointPosition(Pos.CENTER);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR ROBOT CONTEXT.
-    //---------------------------------------------------------------------------------------------
 
     /**
      * Returns the internal context.
@@ -88,10 +73,6 @@ public class FxRobot implements FxRobotInterface {
     public FxRobotContext robotContext() {
         return context;
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR WINDOW TARGETING.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public Window targetWindow() {
@@ -140,10 +121,6 @@ public class FxRobot implements FxRobotInterface {
         return this;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR WINDOW LOOKUP.
-    //---------------------------------------------------------------------------------------------
-
     @Override
     public List<Window> listWindows() {
         return context.getWindowFinder().listWindows();
@@ -183,10 +160,6 @@ public class FxRobot implements FxRobotInterface {
     public Window window(Node node) {
         return context.getWindowFinder().window(node);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR NODE LOOKUP.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public NodeQuery fromAll() {
@@ -238,15 +211,8 @@ public class FxRobot implements FxRobotInterface {
         return context.getNodeFinder().rootNode(node);
     }
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR BOUNDS LOCATION.
-    //---------------------------------------------------------------------------------------------
-
     @Override
-    public BoundsQuery bounds(double minX,
-                              double minY,
-                              double width,
-                              double height) {
+    public BoundsQuery bounds(double minX, double minY, double width, double height) {
         return () -> BoundsQueryUtils.bounds(minX, minY, width, height);
     }
 
@@ -276,26 +242,19 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    @Unstable(reason = "not yet implemented")
     public BoundsQuery bounds(String query) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    @Unstable(reason = "not yet implemented")
     public <T extends Node> BoundsQuery bounds(Matcher<T> matcher) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    @Unstable(reason = "not yet implemented")
     public <T extends Node> BoundsQuery bounds(Predicate<T> predicate) {
         throw new UnsupportedOperationException();
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR POINT POSITION.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public FxRobot targetPos(Pos pointPosition) {
@@ -303,13 +262,8 @@ public class FxRobot implements FxRobotInterface {
         return this;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR POINT LOCATION.
-    //---------------------------------------------------------------------------------------------
-
     @Override
-    public PointQuery point(double x,
-                            double y) {
+    public PointQuery point(double x, double y) {
         PointLocator pointLocator = context.getPointLocator();
         Pos pointPosition = context.getPointPosition();
         return pointLocator.point(new Point2D(x, y)).atPosition(pointPosition);
@@ -361,7 +315,6 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    @Unstable(reason = "might change to accept all objects")
     public <T extends Node> PointQuery point(Matcher<T> matcher) {
         NodeQuery nodeQuery = lookup(matcher);
         Node node = queryNode(nodeQuery, "the matcher \"" + matcher.toString() + "\"");
@@ -375,89 +328,66 @@ public class FxRobot implements FxRobotInterface {
         return point(node).atPosition(context.getPointPosition());
     }
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR POINT OFFSET.
-    //---------------------------------------------------------------------------------------------
-
     @Override
-    public PointQuery offset(Point2D point,
-                             double offsetX,
-                             double offsetY) {
+    public PointQuery offset(Point2D point, double offsetX, double offsetY) {
         return point(point).atOffset(offsetX, offsetY);
     }
 
     @Override
-    public PointQuery offset(Bounds bounds,
-                             double offsetX,
-                             double offsetY) {
+    public PointQuery offset(Bounds bounds, double offsetX, double offsetY) {
         return point(bounds).atOffset(offsetX, offsetY);
     }
 
     @Override
-    public PointQuery offset(Node node,
-                             double offsetX,
-                             double offsetY) {
+    public PointQuery offset(Node node, double offsetX, double offsetY) {
         return point(node).atOffset(offsetX, offsetY);
     }
 
     @Override
-    public PointQuery offset(Scene scene,
-                             double offsetX,
-                             double offsetY) {
+    public PointQuery offset(Node node, Pos offsetReferencePos, double offsetX, double offsetY) {
+        return point(node).atPosition(offsetReferencePos).atOffset(offsetX, offsetY);
+    }
+
+    @Override
+    public PointQuery offset(Scene scene, double offsetX, double offsetY) {
         return point(scene).atOffset(offsetX, offsetY);
     }
 
     @Override
-    public PointQuery offset(Window window,
-                             double offsetX,
-                             double offsetY) {
+    public PointQuery offset(Window window, double offsetX, double offsetY) {
         return point(window).atOffset(offsetX, offsetY);
     }
 
     @Override
-    public PointQuery offset(String query,
-                             double offsetX,
-                             double offsetY) {
+    public PointQuery offset(String query, double offsetX, double offsetY) {
         return point(query).atOffset(offsetX, offsetY);
     }
 
     @Override
-    @Unstable(reason = "might change to accept all objects")
-    public <T extends Node> PointQuery offset(Matcher<T> matcher,
-                                              double offsetX,
-                                              double offsetY) {
+    public <T extends Node> PointQuery offset(Matcher<T> matcher, double offsetX, double offsetY) {
         return point(matcher).atOffset(offsetX, offsetY);
     }
 
     @Override
-    public <T extends Node> PointQuery offset(Predicate<T> predicate,
-                                              double offsetX,
-                                              double offsetY) {
+    public <T extends Node> PointQuery offset(Predicate<T> predicate, double offsetX, double offsetY) {
         return point(predicate).atOffset(offsetX, offsetY);
     }
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR SCREEN CAPTURING.
-    //---------------------------------------------------------------------------------------------
-
     @Override
     public Capture capture(Rectangle2D screenRegion) {
-        Image image = context.getCaptureSupport().captureRegion(screenRegion);
-        return () -> image;
+        return () -> context.getCaptureSupport().captureRegion(screenRegion);
     }
 
     @Override
     public Capture capture(Bounds bounds) {
-        Rectangle2D region = new Rectangle2D(bounds.getMinX(), bounds.getMinX(),
+        Rectangle2D region = new Rectangle2D(bounds.getMinX(), bounds.getMinY(),
                                              bounds.getWidth(), bounds.getHeight());
-        Image image = context.getCaptureSupport().captureRegion(region);
-        return () -> image;
+        return () -> context.getCaptureSupport().captureRegion(region);
     }
 
     @Override
     public Capture capture(Node node) {
-        Image image = context.getCaptureSupport().captureNode(node);
-        return () -> image;
+        return () -> context.getCaptureSupport().captureNode(node);
     }
 
     @Override
@@ -467,25 +397,19 @@ public class FxRobot implements FxRobotInterface {
 
     @Override
     public Capture capture(Path path) {
-        Image image = context.getCaptureSupport().loadImage(path);
-        return () -> image;
+        return () -> context.getCaptureSupport().loadImage(path);
     }
 
     @Override
     public Capture capture(URL url) {
         try {
             Path path = Paths.get(url.toURI());
-            Image image = context.getCaptureSupport().loadImage(path);
-            return () -> image;
+            return () -> context.getCaptureSupport().loadImage(path);
         }
         catch (URISyntaxException exception) {
             throw new RuntimeException(exception);
         }
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS FOR INTERACTION AND INTERRUPTION.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public FxRobot interact(Runnable runnable) {
@@ -524,10 +448,6 @@ public class FxRobot implements FxRobotInterface {
         return this;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF TYPE ROBOT.
-    //---------------------------------------------------------------------------------------------
-
     @Override
     public FxRobot push(KeyCode... combination) {
         context.getTypeRobot().push(combination);
@@ -547,8 +467,7 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot type(KeyCode keyCode,
-                        int times) {
+    public FxRobot type(KeyCode keyCode, int times) {
         context.getTypeRobot().type(keyCode, times);
         return this;
     }
@@ -558,14 +477,14 @@ public class FxRobot implements FxRobotInterface {
         return type(KeyCode.BACK_SPACE, amount);
     }
 
-    @Unstable(reason = "maybe extract this into a new class")
+    /**
+     * @deprecated The implementation of this method simply pushes the keys ALT+F4 which
+     * does not close the current window on all platforms.
+     */
+    @Deprecated
     public FxRobot closeCurrentWindow() {
         return push(KeyCode.ALT, KeyCode.F4).sleep(100);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF WRITE ROBOT.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public FxRobot write(char character) {
@@ -579,9 +498,11 @@ public class FxRobot implements FxRobotInterface {
         return this;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF SLEEP ROBOT.
-    //---------------------------------------------------------------------------------------------
+    @Override
+    public FxRobot write(String text, int sleepMillis) {
+        context.getWriteRobot().write(text, sleepMillis);
+        return this;
+    }
 
     @Override
     public FxRobot sleep(long milliseconds) {
@@ -590,15 +511,10 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot sleep(long duration,
-                         TimeUnit timeUnit) {
+    public FxRobot sleep(long duration, TimeUnit timeUnit) {
         context.getSleepRobot().sleep(duration, timeUnit);
         return this;
     }
-
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF SCROLL ROBOT.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     @Deprecated
@@ -608,8 +524,7 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot scroll(int amount,
-                          VerticalDirection direction) {
+    public FxRobot scroll(int amount, VerticalDirection direction) {
         context.getScrollRobot().scroll(amount, direction);
         return this;
     }
@@ -621,8 +536,7 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot scroll(int amount,
-                          HorizontalDirection direction) {
+    public FxRobot scroll(int amount, HorizontalDirection direction) {
         context.getScrollRobot().scroll(amount, direction);
         return this;
     }
@@ -633,45 +547,29 @@ public class FxRobot implements FxRobotInterface {
         return this;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF KEYBOARD ROBOT.
-    //---------------------------------------------------------------------------------------------
-
     @Override
-    @Unstable(reason = "could be renamed to accept empty arrays")
     public FxRobot press(KeyCode... keys) {
         context.getKeyboardRobot().press(keys);
         return this;
     }
 
     @Override
-    @Unstable(reason = "could be renamed to accept empty arrays")
     public FxRobot release(KeyCode... keys) {
         context.getKeyboardRobot().release(keys);
         return this;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF MOUSE ROBOT.
-    //---------------------------------------------------------------------------------------------
-
     @Override
-    @Unstable(reason = "could be renamed to accept empty arrays")
     public FxRobot press(MouseButton... buttons) {
         context.getMouseRobot().press(buttons);
         return this;
     }
 
     @Override
-    @Unstable(reason = "could be renamed to accept empty arrays")
     public FxRobot release(MouseButton... buttons) {
         context.getMouseRobot().release(buttons);
         return this;
     }
-
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF CLICK ROBOT.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public FxRobot clickOn(MouseButton... buttons) {
@@ -680,9 +578,7 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot clickOn(PointQuery pointQuery,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(PointQuery pointQuery, Motion motion, MouseButton... buttons) {
         context.getClickRobot().clickOn(pointQuery, motion, buttons);
         return this;
     }
@@ -694,75 +590,53 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot doubleClickOn(PointQuery pointQuery,
-                                 Motion motion,
-                                 MouseButton... buttons) {
+    public FxRobot doubleClickOn(PointQuery pointQuery, Motion motion, MouseButton... buttons) {
         context.getClickRobot().doubleClickOn(pointQuery, motion, buttons);
         return this;
     }
 
     @Override
-    public FxRobot clickOn(double x,
-                           double y,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(double x, double y, Motion motion, MouseButton... buttons) {
         return clickOn(point(x, y), motion, buttons);
     }
 
     @Override
-    public FxRobot clickOn(Point2D point,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(Point2D point, Motion motion, MouseButton... buttons) {
         return clickOn(point(point), motion, buttons);
     }
 
     @Override
-    public FxRobot clickOn(Bounds bounds,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(Bounds bounds, Motion motion, MouseButton... buttons) {
         return clickOn(point(bounds), motion, buttons);
     }
 
     @Override
-    public FxRobot clickOn(Node node,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(Node node, Motion motion, MouseButton... buttons) {
         return clickOn(point(node), motion, buttons);
     }
 
     @Override
-    public FxRobot clickOn(Scene scene,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(Scene scene, Motion motion, MouseButton... buttons) {
         return clickOn(point(scene), motion, buttons);
     }
 
     @Override
-    public FxRobot clickOn(Window window,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(Window window, Motion motion, MouseButton... buttons) {
         return clickOn(point(window), motion, buttons);
     }
 
     @Override
-    public FxRobot clickOn(String query,
-                           Motion motion,
-                           MouseButton... buttons) {
+    public FxRobot clickOn(String query, Motion motion, MouseButton... buttons) {
         return clickOn(pointOfVisibleNode(query), motion, buttons);
     }
 
     @Override
-    @Unstable(reason = "might change to accept all objects")
-    public <T extends Node> FxRobot clickOn(Matcher<T> matcher,
-                                            Motion motion,
-                                            MouseButton... buttons) {
+    public <T extends Node> FxRobot clickOn(Matcher<T> matcher, Motion motion, MouseButton... buttons) {
         return clickOn(pointOfVisibleNode(matcher), motion, buttons);
     }
 
     @Override
-    public <T extends Node> FxRobot clickOn(Predicate<T> predicate,
-                                            Motion motion,
-                                            MouseButton... buttons) {
+    public <T extends Node> FxRobot clickOn(Predicate<T> predicate, Motion motion, MouseButton... buttons) {
         return clickOn(pointOfVisibleNode(predicate), motion, buttons);
     }
 
@@ -812,7 +686,6 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    @Unstable(reason = "might change to accept all objects")
     public <T extends Node> FxRobot rightClickOn(Matcher<T> matcher, Motion motion) {
         return clickOn(matcher, motion, MouseButton.SECONDARY);
     }
@@ -867,10 +740,6 @@ public class FxRobot implements FxRobotInterface {
         return doubleClickOn(pointOfVisibleNode(predicate), motion, buttons);
     }
 
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF DRAG ROBOT.
-    //---------------------------------------------------------------------------------------------
-
     @Override
     public FxRobot drag(MouseButton... buttons) {
         context.getDragRobot().drag(buttons);
@@ -878,8 +747,7 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot drag(PointQuery pointQuery,
-                        MouseButton... buttons) {
+    public FxRobot drag(PointQuery pointQuery, MouseButton... buttons) {
         context.getDragRobot().drag(pointQuery, buttons);
         return this;
     }
@@ -897,71 +765,58 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot dropBy(double x,
-                          double y) {
+    public FxRobot dropBy(double x, double y) {
         context.getDragRobot().dropBy(x, y);
         return this;
     }
 
     @Override
-    public FxRobot drag(double x,
-                        double y,
-                        MouseButton... buttons) {
+    public FxRobot drag(double x, double y, MouseButton... buttons) {
         return drag(point(x, y), buttons);
     }
 
     @Override
-    public FxRobot drag(Point2D point,
-                        MouseButton... buttons) {
+    public FxRobot drag(Point2D point, MouseButton... buttons) {
         return drag(point(point), buttons);
     }
 
     @Override
-    public FxRobot drag(Bounds bounds,
-                        MouseButton... buttons) {
+    public FxRobot drag(Bounds bounds, MouseButton... buttons) {
         return drag(point(bounds), buttons);
     }
 
     @Override
-    public FxRobot drag(Node node,
-                        MouseButton... buttons) {
+    public FxRobot drag(Node node, MouseButton... buttons) {
         return drag(point(node), buttons);
     }
 
     @Override
-    public FxRobot drag(Scene scene,
-                        MouseButton... buttons) {
+    public FxRobot drag(Scene scene, MouseButton... buttons) {
         return drag(point(scene), buttons);
     }
 
     @Override
-    public FxRobot drag(Window window,
-                        MouseButton... buttons) {
+    public FxRobot drag(Window window, MouseButton... buttons) {
         return drag(point(window), buttons);
     }
 
     @Override
-    public FxRobot drag(String query,
-                        MouseButton... buttons) {
+    public FxRobot drag(String query, MouseButton... buttons) {
         return drag(pointOfVisibleNode(query), buttons);
     }
 
     @Override
-    @Unstable(reason = "might change to accept all objects")
-    public <T extends Node> FxRobot drag(Matcher<T> matcher,
-                                         MouseButton... buttons) {
+    public <T extends Node> FxRobot drag(Matcher<T> matcher, MouseButton... buttons) {
         return drag(pointOfVisibleNode(matcher), buttons);
     }
 
     @Override
-    public <T extends Node> FxRobot drag(Predicate<T> predicate,
-                                         MouseButton... buttons) {
+    public <T extends Node> FxRobot drag(Predicate<T> predicate, MouseButton... buttons) {
         return drag(pointOfVisibleNode(predicate), buttons);
     }
 
     @Override
-    public FxRobot dropTo(double x,
-                          double y) {
+    public FxRobot dropTo(double x, double y) {
         return dropTo(point(x, y));
     }
 
@@ -996,7 +851,6 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    @Unstable(reason = "might change to accept all objects")
     public <T extends Node> FxRobot dropTo(Matcher<T> matcher) {
         return dropTo(pointOfVisibleNode(matcher));
     }
@@ -1005,10 +859,6 @@ public class FxRobot implements FxRobotInterface {
     public <T extends Node> FxRobot dropTo(Predicate<T> predicate) {
         return dropTo(pointOfVisibleNode(predicate));
     }
-
-    //---------------------------------------------------------------------------------------------
-    // IMPLEMENTATION OF MOVE ROBOT.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public FxRobot moveTo(PointQuery pointQuery, Motion motion) {
@@ -1038,8 +888,8 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    public FxRobot moveTo(Node node, Motion motion) {
-        return moveTo(point(node), motion);
+    public FxRobot moveTo(Node node, Pos offsetReferencePos, Point2D offset, Motion motion) {
+        return moveTo(point(node).atPosition(offsetReferencePos).atOffset(offset), motion);
     }
 
     @Override
@@ -1058,7 +908,6 @@ public class FxRobot implements FxRobotInterface {
     }
 
     @Override
-    @Unstable(reason = "might change to accept all objects")
     public <T extends Node> FxRobot moveTo(Matcher<T> matcher, Motion motion) {
         return moveTo(pointOfVisibleNode(matcher), motion);
     }
@@ -1067,10 +916,6 @@ public class FxRobot implements FxRobotInterface {
     public <T extends Node> FxRobot moveTo(Predicate<T> predicate, Motion motion) {
         return moveTo(pointOfVisibleNode(predicate), motion);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
 
     private PointQuery pointOfVisibleNode(String query) {
         NodeQuery nodeQuery = lookup(query);
@@ -1090,28 +935,23 @@ public class FxRobot implements FxRobotInterface {
         return point(node);
     }
 
-    private Node queryNode(NodeQuery nodeQuery,
-                           String queryDescription) {
+    private Node queryNode(NodeQuery nodeQuery, String queryDescription) {
         Optional<Node> resultNode = nodeQuery.tryQuery();
         if (!resultNode.isPresent()) {
-            String message = queryDescription + " returned no nodes.";
-            throw new FxRobotException(message);
+            throw new FxRobotException(queryDescription + " returned no nodes.");
         }
         return resultNode.get();
     }
 
-    private Node queryVisibleNode(NodeQuery nodeQuery,
-                                  String queryDescription) {
+    private Node queryVisibleNode(NodeQuery nodeQuery, String queryDescription) {
         Set<Node> resultNodes = nodeQuery.queryAll();
         if (resultNodes.isEmpty()) {
-            String message = queryDescription + " returned no nodes.";
-            throw new FxRobotException(message);
+            throw new FxRobotException(queryDescription + " returned no nodes.");
         }
         Optional<Node> resultNode = from(resultNodes).match(isVisible()).tryQuery();
         if (!resultNode.isPresent()) {
-            String message = queryDescription + " returned " + resultNodes.size() + " nodes" +
-                ", but no nodes were visible.";
-            throw new FxRobotException(message);
+            throw new FxRobotException(queryDescription + " returned " + resultNodes.size() + " nodes" +
+                ", but no nodes were visible.");
         }
         return resultNode.get();
     }

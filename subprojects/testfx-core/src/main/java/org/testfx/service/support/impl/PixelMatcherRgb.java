@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -23,48 +23,23 @@ import javafx.scene.paint.Color;
 import org.testfx.service.support.PixelMatcher;
 import org.testfx.util.ColorUtils;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 public class PixelMatcherRgb extends PixelMatcherBase implements PixelMatcher {
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
-
-    private double minColorDistSq = Double.MIN_VALUE;
-
-    private final double minColorDistFactor;
-
     private final double colorBlendFactor;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
+    private final double minColorDistSq;
 
     public PixelMatcherRgb() {
-        this.minColorDistFactor = 0.20;
-        this.colorBlendFactor = 0.75;
+        this(0.20, 0.75);
     }
 
-    public PixelMatcherRgb(double minColorDistFactor,
-                           double colorBlendFactor) {
-        this.minColorDistFactor = minColorDistFactor;
+    public PixelMatcherRgb(double minColorDistFactor, double colorBlendFactor) {
         this.colorBlendFactor = colorBlendFactor;
+        double maxColorDistSq = ColorUtils.calculateColorDistSq(Color.BLACK, Color.WHITE);
+        minColorDistSq = maxColorDistSq * (minColorDistFactor * minColorDistFactor);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
-    @SuppressFBWarnings(value = "FE_FLOATING_POINT_EQUALITY", justification = "checking for initialized value " +
-            "(not result of computation)")
     public boolean matchColors(Color color0, Color color1) {
-        if (minColorDistSq == Double.MIN_VALUE) {
-            double maxColorDistSq = ColorUtils.calculateColorDistSq(Color.BLACK, Color.WHITE);
-            minColorDistSq = maxColorDistSq * (minColorDistFactor * minColorDistFactor);
-        }
-
         double colorDistSq = ColorUtils.calculateColorDistSq(color0, color1);
         return colorDistSq < minColorDistSq;
     }
@@ -80,7 +55,6 @@ public class PixelMatcherRgb extends PixelMatcherBase implements PixelMatcher {
         double gray = color0.grayscale().getRed();
         double opacity = color0.getOpacity();
         return Color.gray(blendToWhite(gray, colorBlendFactor), opacity);
-        //return Color.YELLOW // anti-aliased pixel.
     }
 
     @Override
@@ -88,12 +62,7 @@ public class PixelMatcherRgb extends PixelMatcherBase implements PixelMatcher {
         return Color.RED;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    private double blendToWhite(double gray,
-                                double factor) {
+    private double blendToWhite(double gray, double factor) {
         return ((1.0 - factor) * gray) + factor;
     }
 

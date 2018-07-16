@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -26,19 +26,19 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.testfx.TestFXRule;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class WindowMatchersTest extends FxRobot {
 
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+    public TestRule rule = RuleChain.outerRule(new TestFXRule()).around(exception = ExpectedException.none());
+    public ExpectedException exception;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
@@ -46,29 +46,24 @@ public class WindowMatchersTest extends FxRobot {
     }
 
     @Test
-    public void windowIsNotShowing() throws Exception {
+    public void isNotShowing() throws Exception {
         Window window = FxToolkit.setupFixture((Callable<Stage>) Stage::new);
-
-        // expect:
         assertWithCleanup(() -> assertThat(window, WindowMatchers.isNotShowing()));
     }
 
     @Test
-    public void windowIsNotFocused() throws Exception {
+    public void isNotFocused() throws Exception {
         Window window = FxToolkit.setupFixture((Callable<Stage>) Stage::new);
-
-        // expect:
         assertWithCleanup(() -> assertThat(window, WindowMatchers.isNotFocused()));
     }
 
     @Test
-    public void windowIsShowing() throws Exception {
+    public void isShowing() throws Exception {
         Window window = FxToolkit.setupFixture(() -> {
             Stage stage = new Stage();
             stage.show();
             return stage;
         });
-        // expect:
         assertWithCleanup(() -> assertThat(window, WindowMatchers.isShowing()));
     }
 
@@ -83,7 +78,7 @@ public class WindowMatchersTest extends FxRobot {
 
     @Test
     @Ignore("See https://github.com/TestFX/TestFX/pull/284 for details")
-    public void windowIsFocused() throws Exception {
+    public void isFocused() throws Exception {
         Window window = FxToolkit.setupFixture(() -> {
             Stage stage = new Stage();
             stage.show();
@@ -91,7 +86,6 @@ public class WindowMatchersTest extends FxRobot {
             return stage;
         });
 
-        // expect:
         assertThat(window, WindowMatchers.isFocused());
     }
 }

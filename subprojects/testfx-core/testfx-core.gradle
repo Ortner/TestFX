@@ -14,55 +14,89 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the Licence for the
  * specific language governing permissions and limitations under the Licence.
  */
+ext.pomDescription = 'TestFX Core'
+ext.moduleName = 'org.testfx'
 
-ext.pomDescription = "TestFX Core"
+repositories {
+    jcenter()
+}
 
 dependencies {
-    // use correct API internally depending on which Java version is being used
-    if (usingJava9) {
-        compile project(":testfx-internal-java9")
-    } else {
-        compile project(":testfx-internal-java8")
-    }
-
-    compile "com.google.guava:guava:21.0"
     compile "org.hamcrest:hamcrest-core:1.3"
-    compile 'com.google.code.findbugs:annotations:3.0.1u2'
+    compile "org.assertj:assertj-core:3.9.1"
+    compileOnly 'org.osgi:org.osgi.core:6.0.0'
 
     testCompile "junit:junit:4.12"
-    testCompile "org.mockito:mockito-core:2.7.22"
-    testCompile "org.hamcrest:hamcrest-library:1.3"
-    testCompile "org.controlsfx:controlsfx:8.40.12"
-    if (usingJava9) {
+    testCompile "org.mockito:mockito-core:2.18.0"
+    testCompile project(":testfx-junit")
+    if (JavaVersion.current().isJava9Compatible()) {
         testCompile "org.testfx:openjfx-monocle:jdk-9+181"
     } else {
         testCompile "org.testfx:openjfx-monocle:8u76-b04"
     }
 }
 
+sourceSets {
+    if (!JavaVersion.current().isJava9Compatible()) {
+        main {
+            java {
+                exclude '**/module-info.java'
+            }
+        }
+    }
+}
 
 compileJava {
-    if (usingJava9) {
-        options.compilerArgs += [
-                "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-                "--add-opens", "java.base/java.util=ALL-UNNAMED",
-                "--add-exports", "javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"
-        ]
+    if (JavaVersion.current().isJava9Compatible()) {
+        inputs.property("moduleName", moduleName)
+        doFirst {
+            options.compilerArgs = [
+                    '--module-path', classpath.asPath,
+                    "--add-exports", "javafx.graphics/com.sun.glass.ui=$moduleName",
+                    "--add-exports", "javafx.graphics/com.sun.javafx.application=$moduleName",
+            ]
+            classpath = files()
+        }
 
         javadoc {
-            options.addStringOption('-add-exports', 'javafx.graphics/com.sun.glass.ui=ALL-UNNAMED')
+            exclude "**/module-info.java"
+            options.addStringOption('-module-path', classpath.asPath)
+            options.addMultilineStringsOption('-add-exports').setValue([
+                    'javafx.graphics/com.sun.javafx.application=org.testfx',
+                    'javafx.graphics/com.sun.glass.ui=org.testfx'])
+
         }
     }
 }
 
 compileTestJava {
-    if (usingJava9) {
-        options.compilerArgs += [
-                "--add-opens", "org.testfx.internal/org.testfx.service.adapter=ALL-UNNAMED",
-                "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-                "--add-opens", "java.base/java.util=ALL-UNNAMED",
-                "--add-exports", "javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"
-        ]
+    if (JavaVersion.current().isJava9Compatible()) {
+        inputs.property("moduleName", moduleName)
+        doFirst {
+            options.compilerArgs = [
+                    '--module-path', classpath.asPath,
+                    '--add-modules', 'javafx.fxml',
+                    '--add-modules', 'junit',
+                    '--add-modules', 'org.testfx.junit',
+                    '--add-reads', "$moduleName=javafx.fxml",
+                    '--add-reads', "$moduleName=junit",
+                    '--add-reads', "$moduleName=org.testfx.junit",
+                    "--add-exports", "javafx.graphics/com.sun.glass.ui=$moduleName",
+                    "--add-exports", "javafx.graphics/com.sun.javafx.application=$moduleName",
+                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
+            ]
+            classpath = files()
+        }
     }
 }
 
+jar {
+    inputs.property("moduleName", moduleName)
+
+    manifest {
+        attributes('Automatic-Module-Name': moduleName)
+        instruction 'Export-Package', '*'
+        instruction 'Bundle-Activator', 'org.testfx.osgi.Activator'
+        instruction 'Require-Capability', 'org.testfx.osgi.versionadapter'
+    }
+}

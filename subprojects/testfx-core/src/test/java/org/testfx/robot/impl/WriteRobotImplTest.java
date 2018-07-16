@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -25,30 +25,30 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.robot.BaseRobot;
 import org.testfx.robot.SleepRobot;
 import org.testfx.robot.WriteRobot;
 import org.testfx.service.finder.WindowFinder;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public final class WriteRobotImplTest {
+public class WriteRobotImplTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
-    public WriteRobot writeRobot;
 
-    public Stage stage;
-    public Scene scene;
-    public BaseRobot baseRobot;
-    public SleepRobot sleepRobot;
-    public WindowFinder windowFinder;
+    WriteRobot writeRobot;
+    Stage stage;
+    Scene scene;
+    BaseRobot baseRobot;
+    SleepRobot sleepRobot;
+    WindowFinder windowFinder;
 
     @BeforeClass
     public static void setupSpec() throws Exception {

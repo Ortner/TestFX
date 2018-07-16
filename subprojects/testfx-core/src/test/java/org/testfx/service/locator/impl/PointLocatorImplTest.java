@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -23,11 +23,11 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Window;
 
-import org.hamcrest.Matchers;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.service.locator.BoundsLocator;
 import org.testfx.service.locator.PointLocator;
 import org.testfx.service.query.PointQuery;
@@ -38,9 +38,9 @@ public class PointLocatorImplTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
+
     PointLocator pointLocator;
     BoundsLocatorStub boundsLocatorStub;
-
     Bounds nodeBounds;
     Bounds nodeBoundsAfterChange;
     Bounds sceneBounds;
@@ -70,7 +70,7 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100, 100)));
+        assertThat(point, CoreMatchers.equalTo(new Point2D(100, 100)));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100, 100)));
+        assertThat(point, CoreMatchers.equalTo(new Point2D(100, 100)));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(topLeftPointFrom(nodeBounds)));
+        assertThat(point, CoreMatchers.equalTo(topLeftPointFrom(nodeBounds)));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(topLeftPointFrom(nodeBoundsAfterChange)));
+        assertThat(point, CoreMatchers.equalTo(topLeftPointFrom(nodeBoundsAfterChange)));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(topLeftPointFrom(sceneBounds)));
+        assertThat(point, CoreMatchers.equalTo(topLeftPointFrom(sceneBounds)));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(topLeftPointFrom(sceneBoundsAfterChange)));
+        assertThat(point, CoreMatchers.equalTo(topLeftPointFrom(sceneBoundsAfterChange)));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(topLeftPointFrom(windowBounds)));
+        assertThat(point, CoreMatchers.equalTo(topLeftPointFrom(windowBounds)));
     }
 
     @Test
@@ -164,20 +164,12 @@ public class PointLocatorImplTest {
         Point2D point = pointQuery.atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(topLeftPointFrom(windowBoundsAfterChange)));
+        assertThat(point, CoreMatchers.equalTo(topLeftPointFrom(windowBoundsAfterChange)));
     }
-
-    //---------------------------------------------------------------------------------------------
-    // HELPER METHODS.
-    //---------------------------------------------------------------------------------------------
 
     public Point2D topLeftPointFrom(Bounds bounds) {
         return new Point2D(bounds.getMinX(), bounds.getMinY());
     }
-
-    //---------------------------------------------------------------------------------------------
-    // STUBS AND MOCKS.
-    //---------------------------------------------------------------------------------------------
 
     public static class BoundsLocatorStub implements BoundsLocator {
         public Bounds bounds;

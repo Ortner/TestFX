@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -33,12 +33,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.robot.Motion;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.is;
 
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
@@ -46,7 +46,7 @@ import static org.testfx.util.DebugUtils.informedErrorMessage;
 public class MenuBarTest {
 
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
+    public TestFXRule testFXRule = new TestFXRule(2);
 
     FxRobot fxRobot = new FxRobot();
     Menu editMenu;
@@ -66,7 +66,7 @@ public class MenuBarTest {
 
             MenuItem newItem = new MenuItem("New");
             newItem.setId("newItem");
-            newItem.setOnAction((actionEvent) -> newMenuShownLatch.countDown());
+            newItem.setOnAction(actionEvent -> newMenuShownLatch.countDown());
             fileMenu.getItems().add(newItem);
 
             MenuItem saveAsItem = new MenuItem("Save As..............................");
@@ -91,13 +91,15 @@ public class MenuBarTest {
         });
     }
 
+    /**
+     * When moving directly from "#fileMenu" to "#newItem" (i.e. diagonally) the {@code editMenu}
+     * is activated because of the width of {@code fileMenu}. However we detect this scenario and
+     * instead move vertically (along the y-axis) first, and then horizontally (along the x-axis).
+     *
+     * @see <a href="https://github.com/TestFX/TestFX/issues/309">Issue #309</a>
+     */
     @Test
     public void should_move_vertically_first() throws Exception {
-        // When moving directly from "#fileMenu" to "#newItem" (i.e. diagonally) the {@code editMenu}
-        // is activated because of the width of {@code fileMenu}. However we detect this scenario and
-        // instead move vertically (along the y-axis) first, and then horizontally (along the x-axis).
-        // see: https://github.com/TestFX/TestFX/issues/309
-
         // First we show that it is indeed the case that {@code editMenu} is triggered when moving directly:
         editMenu.setOnShown(event -> editMenuShownLatch.countDown());
         fxRobot.clickOn("#fileMenu").clickOn("#newItem", Motion.DIRECT);

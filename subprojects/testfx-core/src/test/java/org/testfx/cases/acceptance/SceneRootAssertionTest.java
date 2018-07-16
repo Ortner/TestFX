@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,26 +16,23 @@
  */
 package org.testfx.cases.acceptance;
 
-import java.util.function.Predicate;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
-@Ignore
 public class SceneRootAssertionTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
+
     StackPane stackPane;
     Label label;
 
@@ -52,11 +49,7 @@ public class SceneRootAssertionTest {
 
     @Test
     public void should_have_stage_root_with_label() {
-        verifyThat(stackPane, hasChild(label));
-    }
-
-    private Predicate<Parent> hasChild(Node node) {
-        return (Parent parent) -> parent.getChildrenUnmodifiable().contains(node);
+        verifyThat(stackPane, (Parent parent) -> parent.getChildrenUnmodifiable().contains(label));
     }
 
 }

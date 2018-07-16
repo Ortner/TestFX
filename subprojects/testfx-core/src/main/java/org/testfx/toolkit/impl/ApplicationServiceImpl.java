@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,40 +16,27 @@
  */
 package org.testfx.toolkit.impl;
 
-import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import com.google.common.util.concurrent.SettableFuture;
-import org.testfx.api.annotation.Unstable;
 import org.testfx.toolkit.ApplicationService;
 
 import static org.testfx.util.WaitForAsyncUtils.asyncFx;
 
-@Unstable(reason = "needs more tests")
 public class ApplicationServiceImpl implements ApplicationService {
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    @Override
-    public Future<Application> create(Callable<Application> applicationCallable) {
-        // Should run in JavaFX application thread.
-        return asyncFx(applicationCallable);
-    }
 
     @Override
     public Future<Void> init(Application application) {
         // Should be called in TestFX launcher thread.
-        SettableFuture<Void> future = SettableFuture.create();
+        CompletableFuture<Void> future = new CompletableFuture<>();
         try {
             application.init();
-            future.set(null);
+            future.complete(null);
         }
         catch (Exception exception) {
-            future.setException(exception);
+            future.completeExceptionally(exception);
         }
         return future;
     }

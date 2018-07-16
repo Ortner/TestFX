@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -25,7 +25,6 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
-import java.util.Map;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Point2D;
@@ -35,44 +34,20 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 
-import com.google.common.collect.ImmutableMap;
-import org.testfx.api.annotation.Unstable;
 import org.testfx.service.adapter.RobotAdapter;
 
-import static org.testfx.service.adapter.JavaVersionAdapter.convertToKeyCodeId;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
+import static org.testfx.internal.JavaVersionAdapter.convertToKeyCodeId;
 
-@Unstable
 public class AwtRobotAdapter implements RobotAdapter<Robot> {
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTANTS.
-    //---------------------------------------------------------------------------------------------
-
-    public static final Map<MouseButton, Integer> AWT_BUTTONS = ImmutableMap.of(
-        MouseButton.PRIMARY, InputEvent.BUTTON1_MASK,
-        MouseButton.MIDDLE, InputEvent.BUTTON2_MASK,
-        MouseButton.SECONDARY, InputEvent.BUTTON3_MASK
-    );
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
 
     private Robot awtRobot;
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    // ROBOT.
-
     @Override
     public void robotCreate() {
-        if (isAwtEnvironmentHeadless()) {
-            throw new RuntimeException("environment is headless");
+        if (GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance()) {
+            throw new RuntimeException("can not create awt robot as environment is headless");
         }
-        initializeAwtToolkit();
+        Toolkit.getDefaultToolkit(); // initializes awt toolkit
         awtRobot = createAwtRobot();
     }
 
@@ -86,8 +61,6 @@ public class AwtRobotAdapter implements RobotAdapter<Robot> {
         return awtRobot;
     }
 
-    // KEY.
-
     @Override
     public void keyPress(KeyCode key) {
         useRobot().keyPress(convertToKeyCodeId(key));
@@ -98,11 +71,10 @@ public class AwtRobotAdapter implements RobotAdapter<Robot> {
         useRobot().keyRelease(convertToKeyCodeId(key));
     }
 
-    // MOUSE.
-
     @Override
     public Point2D getMouseLocation() {
-        return convertFromAwtPoint(MouseInfo.getPointerInfo().getLocation());
+        Point awtPoint = MouseInfo.getPointerInfo().getLocation();
+        return new Point2D(awtPoint.getX(), awtPoint.getY());
     }
 
     @Override
@@ -125,8 +97,6 @@ public class AwtRobotAdapter implements RobotAdapter<Robot> {
         useRobot().mouseWheel(wheelAmount);
     }
 
-    // CAPTURE.
-
     @Override
     public Color getCapturePixelColor(Point2D location) {
         Rectangle2D region = new Rectangle2D(location.getX(), location.getY(), 1, 1);
@@ -136,21 +106,12 @@ public class AwtRobotAdapter implements RobotAdapter<Robot> {
 
     @Override
     public Image getCaptureRegion(Rectangle2D region) {
-        Rectangle awtRectangle = convertToAwtRectangle(region);
+        Rectangle awtRectangle = new Rectangle(
+                (int) region.getMinX(), (int) region.getMinY(),
+                (int) region.getWidth(), (int) region.getHeight());
         BufferedImage awtBufferedImage = useRobot().createScreenCapture(awtRectangle);
-        return convertFromAwtBufferedImage(awtBufferedImage);
+        return SwingFXUtils.toFXImage(awtBufferedImage, null);
     }
-
-    // TIMER.
-
-    @Override
-    public void timerWaitForIdle() {
-        waitForFxEvents();
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
 
     private Robot useRobot() {
         if (awtRobot == null) {
@@ -168,31 +129,13 @@ public class AwtRobotAdapter implements RobotAdapter<Robot> {
         }
     }
 
-    private void initializeAwtToolkit() {
-        Toolkit.getDefaultToolkit();
-    }
-
-    private boolean isAwtEnvironmentHeadless() {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance();
-    }
-
-    private Point2D convertFromAwtPoint(Point awtPoint) {
-        return new Point2D(awtPoint.getX(), awtPoint.getY());
-    }
-
-    private Image convertFromAwtBufferedImage(BufferedImage awtBufferedImage) {
-        return SwingFXUtils.toFXImage(awtBufferedImage, null);
-    }
-
     private int convertToAwtButton(MouseButton button) {
-        return AWT_BUTTONS.get(button);
-    }
-
-    private Rectangle convertToAwtRectangle(Rectangle2D rectangle) {
-        return new Rectangle(
-            (int) rectangle.getMinX(), (int) rectangle.getMinY(),
-            (int) rectangle.getWidth(), (int) rectangle.getHeight()
-        );
+        switch (button) {
+            case PRIMARY: return InputEvent.BUTTON1_DOWN_MASK;
+            case MIDDLE: return InputEvent.BUTTON2_DOWN_MASK;
+            case SECONDARY: return InputEvent.BUTTON3_DOWN_MASK;
+            default: throw new IllegalArgumentException("MouseButton: " + button + " not supported by awt robot");
+        }
     }
 
 }

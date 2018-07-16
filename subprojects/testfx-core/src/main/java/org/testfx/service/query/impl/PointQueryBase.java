@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,27 +21,15 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 
-import org.testfx.api.annotation.Unstable;
 import org.testfx.robot.Motion;
 import org.testfx.service.query.PointQuery;
 import org.testfx.util.PointQueryUtils;
 
-@Unstable
 public abstract class PointQueryBase implements PointQuery {
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
-
     private Point2D position = new Point2D(0, 0);
-
     private Point2D offset = new Point2D(0, 0);
-
     protected Node node;
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public Point2D getPosition() {
@@ -60,8 +48,7 @@ public abstract class PointQueryBase implements PointQuery {
     }
 
     @Override
-    public PointQuery atPosition(double positionX,
-                                 double positionY) {
+    public PointQuery atPosition(double positionX, double positionY) {
         return atPosition(new Point2D(positionX, positionY));
     }
 
@@ -72,16 +59,12 @@ public abstract class PointQueryBase implements PointQuery {
 
     @Override
     public PointQuery atOffset(Point2D offset) {
-        this.offset = new Point2D(
-            this.offset.getX() + offset.getX(),
-            this.offset.getY() + offset.getY()
-        );
+        this.offset = new Point2D(this.offset.getX() + offset.getX(), this.offset.getY() + offset.getY());
         return this;
     }
 
     @Override
-    public PointQuery atOffset(double offsetX,
-                               double offsetY) {
+    public PointQuery atOffset(double offsetX, double offsetY) {
         return atOffset(new Point2D(offsetX, offsetY));
     }
 

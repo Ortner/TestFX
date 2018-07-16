@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -26,10 +26,6 @@ import org.hamcrest.Matcher;
 import org.testfx.service.query.NodeQuery;
 
 public interface NodeFinder {
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     /**
      * Returns a {@link NodeQuery} that stores all the root nodes that meet the given query

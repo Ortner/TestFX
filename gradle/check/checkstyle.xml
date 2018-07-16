@@ -22,7 +22,9 @@
     <property name="charset" value="UTF-8"/>
 
     <module name="TreeWalker">
-        <module name="AvoidNestedBlocks"/>
+        <module name="AvoidNestedBlocks">
+            <property name="allowInSwitchCase" value="true"/>
+        </module>
         <module name="OuterTypeFilename"/>
         <module name="AvoidEscapedUnicodeCharacters">
             <property name="allowEscapesForControlCharacters" value="true"/>
@@ -130,7 +132,9 @@
         </module>
 
         <!-- Naming -->
-        <module name="ClassTypeParameterName"/>
+        <module name="ClassTypeParameterName">
+            <property name="format" value="^[A-Z]$|SELF"/>
+        </module>
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
@@ -147,8 +151,8 @@
         <module name="ParameterName"/>
         <module name="TypeName"/>
         <module name="PackageDeclaration"/>
-        <!-- to enable SuppressionCommentFilter -->
-        <module name="FileContentsHolder"/>
+        <!-- allows suppressing using the //CHECKSTYLE:ON //CHECKSTYLE:OFF -->
+        <module name="SuppressionCommentFilter"/>
     </module>
     <module name="FileTabCharacter"/>
     <module name="RegexpSingleline">
@@ -160,6 +164,4 @@
     <module name="RegexpSingleline">
         <property name="format" value="^\s*\*\s*@author"/>
     </module>
-    <!-- allows suppressing using the //CHECKSTYLE:ON //CHECKSTYLE:OFF -->
-    <module name="SuppressionCommentFilter"/>
 </module>

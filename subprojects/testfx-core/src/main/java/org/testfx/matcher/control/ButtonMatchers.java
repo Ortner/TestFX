@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,7 +16,6 @@
  */
 package org.testfx.matcher.control;
 
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 
 import org.hamcrest.Factory;
@@ -25,27 +24,25 @@ import org.hamcrest.Matcher;
 import static org.testfx.matcher.base.GeneralMatchers.typeSafeMatcher;
 
 /**
- * TestFX matchers for {@link Button}
+ * TestFX matchers for {@link Button} controls.
  */
 public class ButtonMatchers {
 
-    //---------------------------------------------------------------------------------------------
-    // STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
+    private ButtonMatchers() {}
 
     /**
-     * Creates a matcher that matches all {@link Button}s that are considered cancel buttons.
+     * Creates a matcher that matches all {@link Button}s that are cancel buttons.
      */
     @Factory
-    public static Matcher<Node> isCancelButton() {
+    public static Matcher<Button> isCancelButton() {
         return typeSafeMatcher(Button.class, "is cancel button", Button::isCancelButton);
     }
 
     /**
-     * Creates a matcher that matches all {@link Button}s that are considered default buttons.
+     * Creates a matcher that matches all {@link Button}s that are default buttons.
      */
     @Factory
-    public static Matcher<Node> isDefaultButton() {
+    public static Matcher<Button> isDefaultButton() {
         return typeSafeMatcher(Button.class, "is default button", Button::isDefaultButton);
     }
 }

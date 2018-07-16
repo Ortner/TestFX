@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,18 +21,18 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.testfx.framework.junit.TestFXRule;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BoundsPointQueryTest {
 
     @Rule
     public TestFXRule testFXRule = new TestFXRule();
+
     Bounds bounds;
 
     @Before
@@ -46,7 +46,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atPosition(0.0, 0.0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100, 200)));
+        assertThat(point).isEqualTo(new Point2D(100, 200));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atPosition(1.0, 1.0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100 + 300, 200 + 400)));
+        assertThat(point).isEqualTo(new Point2D(100 + 300, 200 + 400));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atPosition(0.5, 0.5).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100 + 150, 200 + 200)));
+        assertThat(point).isEqualTo(new Point2D(100 + 150, 200 + 200));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atPosition(Pos.TOP_LEFT).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100, 200)));
+        assertThat(point).isEqualTo(new Point2D(100, 200));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atPosition(Pos.BOTTOM_RIGHT).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100 + 300, 200 + 400)));
+        assertThat(point).isEqualTo(new Point2D(100 + 300, 200 + 400));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atPosition(Pos.CENTER).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100 + 150, 200 + 200)));
+        assertThat(point).isEqualTo(new Point2D(100 + 150, 200 + 200));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atOffset(0, 0).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100, 200)));
+        assertThat(point).isEqualTo(new Point2D(100, 200));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atOffset(300, 400).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100 + 300, 200 + 400)));
+        assertThat(point).isEqualTo(new Point2D(100 + 300, 200 + 400));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class BoundsPointQueryTest {
         Point2D point = new BoundsPointQuery(bounds).atOffset(150, 200).query();
 
         // then:
-        assertThat(point, Matchers.equalTo(new Point2D(100 + 150, 200 + 200)));
+        assertThat(point).isEqualTo(new Point2D(100 + 150, 200 + 200));
     }
 
 }

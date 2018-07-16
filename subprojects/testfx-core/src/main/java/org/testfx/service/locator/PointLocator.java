@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -29,6 +29,7 @@ import org.testfx.service.query.PointQuery;
  * point (in terms of the screen) somewhere in the bounds of the provided object.
  */
 public interface PointLocator {
+
     /**
      *
      * @param bounds the initial bounds with which to construct a {@link PointQuery}
@@ -38,12 +39,13 @@ public interface PointLocator {
 
     /**
      *
-     * @param point to convert into a {@link Bounds} object.
+     * @param point to convert into a {@link Bounds} object
      * @return a {@link PointQuery} whose bounds x and y values are the given point and whose width/height = 0
      */
     PointQuery point(Point2D point);
 
     /**
+     * Returns the center of the given {@code Node} in screen coordinates.
      *
      * @param node the node
      * @return a {@link PointQuery} with the node's bounds (in terms of the screen) as the initial bounds

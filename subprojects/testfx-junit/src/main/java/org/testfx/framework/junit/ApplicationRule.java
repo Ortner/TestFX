@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -25,8 +25,7 @@ import org.junit.runners.model.Statement;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 
-public class ApplicationRule extends FxRobot
-        implements ApplicationFixture, TestRule {
+public class ApplicationRule extends FxRobot implements ApplicationFixture, TestRule {
 
     private final Consumer<Stage> start;
     private final Consumer<Stage> stop;
@@ -43,9 +42,7 @@ public class ApplicationRule extends FxRobot
     }
 
     @Override
-    public void init() throws Exception {
-        // do nothing
-    }
+    public void init() throws Exception {}
 
     @Override
     public void start(Stage stage) throws Exception {

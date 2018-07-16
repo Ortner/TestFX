@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -17,89 +17,77 @@
 package org.testfx.framework.spock
 
 import javafx.application.Application
-import javafx.application.HostServices
-import javafx.application.Preloader
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
 import javafx.stage.Stage
 import org.testfx.api.FxRobot
 import org.testfx.api.FxToolkit
-import org.testfx.api.annotation.Unstable
 import spock.lang.Specification
 
+/**
+ * Base class for all TestFX Spock specifications.
+ * <p>
+ * <h3>Example:</h3>
+ * <pre><code>
+ * class MySpec extends ApplicationSpec {
+ *
+ * {@literal @}Override
+ * void start(Stage stage) {
+ *     Button button = new Button("click me!")
+ *     button.setOnAction { button.setText("clicked!") }
+ *     stage.setScene(new Scene(new StackPane(button), 100, 100))
+ *     stage.show()
+ * }
+ *
+ * def "button should change text when clicked"() {
+ *    when:
+ *    clickOn(".button")
+ *
+ *    then:
+ *    verifyThat(".button", hasText("clicked!"))
+ * }
+ * </code></pre>
+ */
 abstract class ApplicationSpec extends Specification implements ApplicationFixture {
 
     @Delegate
     private final FxRobot robot = new FxRobot()
 
-    //---------------------------------------------------------------------------------------------
-    // STATIC METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    @Unstable(reason = "is missing apidocs")
-    public static void launch(Class<? extends Application> appClass,
+    static void launch(Class<? extends Application> appClass,
                               String... appArgs) throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(appClass, appArgs);
+        FxToolkit.registerPrimaryStage()
+        FxToolkit.setupApplication(appClass, appArgs)
     }
 
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
-
-    def setup() {
+    void setup() {
         internalBefore()
     }
 
-    def cleanup() {
+    void cleanup() {
         internalAfter()
     }
 
-    @Unstable(reason = "is missing apidocs")
-    public final void internalBefore()
-            throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication( { new ApplicationAdapter(this) });
+    final void internalBefore() throws Exception {
+        FxToolkit.registerPrimaryStage()
+        FxToolkit.setupApplication { new ApplicationAdapter(this) }
     }
 
-    @Unstable(reason = "is missing apidocs")
-    public final void internalAfter()
-            throws Exception {
+    final void internalAfter() throws Exception {
         // release all keys
-        release(new KeyCode[0]);
+        release(new KeyCode[0])
         // release all mouse buttons
-        release(new MouseButton[0]);
-        FxToolkit.cleanupApplication(new ApplicationAdapter(this));
+        release(new MouseButton[0])
+        FxToolkit.cleanupApplication(new ApplicationAdapter(this))
     }
 
     @Override
-    @Unstable(reason = "is missing apidocs")
-    public void init()
-            throws Exception {}
+    void init() throws Exception {
+    }
 
     @Override
-    @Unstable(reason = "is missing apidocs")
-    public abstract void start(Stage stage)
-            throws Exception;
+    abstract void start(Stage stage) throws Exception
 
     @Override
-    @Unstable(reason = "is missing apidocs")
-    public void stop()
-            throws Exception {}
-
-    @Deprecated
-    public final HostServices getHostServices() {
-        throw new UnsupportedOperationException();
+    void stop() throws Exception {
     }
-
-    @Deprecated
-    public final Application.Parameters getParameters() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Deprecated
-    public final void notifyPreloader(Preloader.PreloaderNotification notification) {
-        throw new UnsupportedOperationException();
-    }
-
 }

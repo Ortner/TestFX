@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
@@ -32,10 +33,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Shape;
 import javax.imageio.ImageIO;
 
-import com.google.common.io.ByteSink;
-import com.google.common.io.ByteSource;
-import com.google.common.io.Files;
-import org.testfx.api.annotation.Unstable;
 import org.testfx.robot.BaseRobot;
 import org.testfx.service.support.CaptureSupport;
 import org.testfx.service.support.PixelMatcher;
@@ -44,32 +41,15 @@ import org.testfx.service.support.PixelMatcherResult;
 import static org.testfx.util.WaitForAsyncUtils.asyncFx;
 import static org.testfx.util.WaitForAsyncUtils.waitFor;
 
-@Unstable(reason = "needs more tests")
 public class CaptureSupportImpl implements CaptureSupport {
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTANTS.
-    //---------------------------------------------------------------------------------------------
 
     public static final String PNG_IMAGE_FORMAT = "png";
 
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE FIELDS.
-    //---------------------------------------------------------------------------------------------
-
     private BaseRobot baseRobot;
-
-    //---------------------------------------------------------------------------------------------
-    // CONSTRUCTORS.
-    //---------------------------------------------------------------------------------------------
 
     public CaptureSupportImpl(BaseRobot baseRobot) {
         this.baseRobot = baseRobot;
     }
-
-    //---------------------------------------------------------------------------------------------
-    // METHODS.
-    //---------------------------------------------------------------------------------------------
 
     @Override
     public Image captureNode(Node node) {
@@ -84,8 +64,7 @@ public class CaptureSupportImpl implements CaptureSupport {
     @Override
     public Image loadImage(Path path) {
         checkFileExists(path);
-        ByteSource byteSource = Files.asByteSource(path.toFile());
-        try (InputStream inputStream = byteSource.openBufferedStream()) {
+        try (InputStream inputStream = Files.newInputStream(path)) {
             return readImageFromStream(inputStream);
         }
         catch (IOException exception) {
@@ -97,8 +76,7 @@ public class CaptureSupportImpl implements CaptureSupport {
     public void saveImage(Image image,
                           Path path) {
         checkParentDirectoryExists(path);
-        ByteSink byteSink = Files.asByteSink(path.toFile());
-        try (OutputStream outputStream = byteSink.openBufferedStream()) {
+        try (OutputStream outputStream = Files.newOutputStream(path)) {
             writeImageToStream(image, outputStream);
         }
         catch (IOException exception) {
@@ -118,10 +96,6 @@ public class CaptureSupportImpl implements CaptureSupport {
                                           PixelMatcher pixelMatcher) {
         return pixelMatcher.match(image0, image1);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // PRIVATE METHODS.
-    //---------------------------------------------------------------------------------------------
 
     private void checkFileExists(Path path) {
         if (!path.toFile().isFile()) {

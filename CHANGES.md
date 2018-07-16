@@ -1,10 +1,114 @@
 # Change Log
 
-## [4.0.8-alpha](https://github.com/testfx/testfx/tree/4.0.8-alpha) (2017-10-04)
-[Full Changelog](https://github.com/testfx/testfx/compare/v4.0.7-alpha...4.0.8-alpha)
+## [v4.0.13-alpha](https://github.com/testfx/testfx/tree/v4.0.13-alpha) (2018-03-22)
+[Full Changelog](https://github.com/testfx/testfx/compare/v4.0.12-alpha...v4.0.13-alpha)
 
 **Merged pull requests:**
 
+- Support different UI scales \(hidpi\) [\#544](https://github.com/TestFX/TestFX/pull/544) ([brcolow](https://github.com/brcolow))
+- \(fix\) Maintain order of nodes as returned by Node.lookupAll\(..\). [\#542](https://github.com/TestFX/TestFX/pull/542) ([brcolow](https://github.com/brcolow))
+- \(fix\) Skip before\_install, script, and after\_success when deploying. [\#539](https://github.com/TestFX/TestFX/pull/539) ([brcolow](https://github.com/brcolow))
+
+## [v4.0.12-alpha](https://github.com/testfx/testfx/tree/v4.0.12-alpha) (2018-02-22)
+[Full Changelog](https://github.com/testfx/testfx/compare/v4.0.11-alpha...v4.0.12-alpha)
+
+**Merged pull requests:**
+
+- \(fix\) Fix version regex in release script. [\#538](https://github.com/TestFX/TestFX/pull/538) ([brcolow](https://github.com/brcolow))
+- \(chore\) Add a check for github\_changelog\_generator gem. [\#537](https://github.com/TestFX/TestFX/pull/537) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump AssertJ 3.8.0 -\> 3.9.1. [\#536](https://github.com/TestFX/TestFX/pull/536) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Add more matchers/assertions for Text instances. [\#535](https://github.com/TestFX/TestFX/pull/535) ([brcolow](https://github.com/brcolow))
+- \(chore\) Add assertThat tests to junit subprojects. [\#534](https://github.com/TestFX/TestFX/pull/534) ([brcolow](https://github.com/brcolow))
+- \(fix\) Fix the region that is used to capture Bounds. [\#530](https://github.com/TestFX/TestFX/pull/530) ([psaikkonen](https://github.com/psaikkonen))
+- \(chore\) Document Java 8 minimum requirement. [\#529](https://github.com/TestFX/TestFX/pull/529) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Allow FxRobot.write\(..\) sleep time to be configured. [\#528](https://github.com/TestFX/TestFX/pull/528) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump gradle 4.4.1 =\> 4.5.1 [\#526](https://github.com/TestFX/TestFX/pull/526) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump checkstyle from 8.5 to 8.8. [\#525](https://github.com/TestFX/TestFX/pull/525) ([brcolow](https://github.com/brcolow))
+- \[WIP\] Color matchers, refactor ColorUtils. [\#524](https://github.com/TestFX/TestFX/pull/524) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Add some more offset convenience methods. [\#523](https://github.com/TestFX/TestFX/pull/523) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Add isFocused/isNotFocused to NodeMatchers. [\#522](https://github.com/TestFX/TestFX/pull/522) ([brcolow](https://github.com/brcolow))
+- \(chore\) Add test for write\(..\). [\#521](https://github.com/TestFX/TestFX/pull/521) ([brcolow](https://github.com/brcolow))
+- \(chore\) Fix JUnit 5 README example visibility modifiers. [\#520](https://github.com/TestFX/TestFX/pull/520) ([brcolow](https://github.com/brcolow))
+- \(chore\) Add note about testfx-legacy deprecation to README. [\#517](https://github.com/TestFX/TestFX/pull/517) ([brcolow](https://github.com/brcolow))
+- \(chore\) Add a cleanup handler to release script. [\#514](https://github.com/TestFX/TestFX/pull/514) ([brcolow](https://github.com/brcolow))
+
+## [v4.0.11-alpha](https://github.com/testfx/testfx/tree/v4.0.11-alpha) (2018-01-23)
+[Full Changelog](https://github.com/testfx/testfx/compare/v4.0.10-alpha...v4.0.11-alpha)
+
+**Merged pull requests:**
+
+- \(enhancement\) Add support for AssertJ assertions. [\#532](https://github.com/TestFX/TestFX/pull/532) ([brcolow](https://github.com/brcolow))
+- \(release\) TestFX v4.0.11-alpha [\#513](https://github.com/TestFX/TestFX/pull/513) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump appveyor Java 9 version. [\#512](https://github.com/TestFX/TestFX/pull/512) ([brcolow](https://github.com/brcolow))
+- MoveRobotImpl slowness fix [\#511](https://github.com/TestFX/TestFX/pull/511) ([seggcsont](https://github.com/seggcsont))
+- \(chore\) Add GitHub issue template. [\#509](https://github.com/TestFX/TestFX/pull/509) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump gradle 4.4 =\> 4.4.1 [\#504](https://github.com/TestFX/TestFX/pull/504) ([brcolow](https://github.com/brcolow))
+- \(chore\) Cleanup FxToolkit by inlining some methods. [\#503](https://github.com/TestFX/TestFX/pull/503) ([brcolow](https://github.com/brcolow))
+- \(chore\) Add Gradle/Maven Java 9 usage info to README. [\#502](https://github.com/TestFX/TestFX/pull/502) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Improve TableViewMatchers containsRow javadocs. [\#501](https://github.com/TestFX/TestFX/pull/501) ([brcolow](https://github.com/brcolow))
+- \(chore\) Update license header year. [\#500](https://github.com/TestFX/TestFX/pull/500) ([brcolow](https://github.com/brcolow))
+- \(chore\) Cleanup comment section headers in junit subprojects. [\#496](https://github.com/TestFX/TestFX/pull/496) ([brcolow](https://github.com/brcolow))
+- \(chore\) Cleanup the README. [\#495](https://github.com/TestFX/TestFX/pull/495) ([brcolow](https://github.com/brcolow))
+- \(chore\) Remove ext.isJava9 in favor of native Gradle methods. [\#493](https://github.com/TestFX/TestFX/pull/493) ([brcolow](https://github.com/brcolow))
+- \(fix\) Fix some bash strict mode errors in release.sh. [\#491](https://github.com/TestFX/TestFX/pull/491) ([brcolow](https://github.com/brcolow))
+- \(fix\) Fix use of positional parameter in release.sh. [\#490](https://github.com/TestFX/TestFX/pull/490) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Automatically sync to Maven Central when auto-deploying. [\#489](https://github.com/TestFX/TestFX/pull/489) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Begin to automate the release process. [\#488](https://github.com/TestFX/TestFX/pull/488) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump checkstyle 8.4 =\> 8.5, improve docs redundancy. [\#487](https://github.com/TestFX/TestFX/pull/487) ([brcolow](https://github.com/brcolow))
+- \(chore\) Fully test ScrollRobotImpl. [\#486](https://github.com/TestFX/TestFX/pull/486) ([brcolow](https://github.com/brcolow))
+- \(chore\) Try JaCoCo snapshot, cleanup BoundsQueryUtils. [\#485](https://github.com/TestFX/TestFX/pull/485) ([brcolow](https://github.com/brcolow))
+- \(chore\) Remove or fix some ignored tests. [\#484](https://github.com/TestFX/TestFX/pull/484) ([brcolow](https://github.com/brcolow))
+- \(chore\) Cleanup testfx-core tests. [\#483](https://github.com/TestFX/TestFX/pull/483) ([brcolow](https://github.com/brcolow))
+- \(chore\) Cleanup code \(remove section comments, inline methods\). [\#482](https://github.com/TestFX/TestFX/pull/482) ([brcolow](https://github.com/brcolow))
+- \(chore\) Cleanup testfx.robot\(.impl\). [\#480](https://github.com/TestFX/TestFX/pull/480) ([brcolow](https://github.com/brcolow))
+- Add notice for Junit5 users in readme [\#478](https://github.com/TestFX/TestFX/pull/478) ([jcornaz](https://github.com/jcornaz))
+- Cleanup RobotAdapters. [\#477](https://github.com/TestFX/TestFX/pull/477) ([brcolow](https://github.com/brcolow))
+- \(chore\) Add test failure summary. [\#474](https://github.com/TestFX/TestFX/pull/474) ([brcolow](https://github.com/brcolow))
+- \(chore\) Fix build.gradle line length. [\#473](https://github.com/TestFX/TestFX/pull/473) ([brcolow](https://github.com/brcolow))
+- \(fix\) Add gdb apt package to each Travis matrix build. [\#472](https://github.com/TestFX/TestFX/pull/472) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Simplify converting from Glass colors. [\#471](https://github.com/TestFX/TestFX/pull/471) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Continue modularization [\#470](https://github.com/TestFX/TestFX/pull/470) ([brcolow](https://github.com/brcolow))
+- Fixed Gitter link [\#469](https://github.com/TestFX/TestFX/pull/469) ([AdamCarroll](https://github.com/AdamCarroll))
+
+## [v4.0.10-alpha](https://github.com/testfx/testfx/tree/v4.0.10-alpha) (2017-11-28)
+[Full Changelog](https://github.com/testfx/testfx/compare/v4.0.9-alpha...v4.0.10-alpha)
+
+**Merged pull requests:**
+
+- \(release\) TestFX 4.0.10-alpha [\#468](https://github.com/TestFX/TestFX/pull/468) ([brcolow](https://github.com/brcolow))
+- \(chore\) Update junit5 to 5.1.0-M1 [\#467](https://github.com/TestFX/TestFX/pull/467) ([brcolow](https://github.com/brcolow))
+- \(chore\) Fix coveralls badge URL. [\#465](https://github.com/TestFX/TestFX/pull/465) ([brcolow](https://github.com/brcolow))
+
+## [v4.0.9-alpha](https://github.com/testfx/testfx/tree/v4.0.9-alpha) (2017-11-25)
+[Full Changelog](https://github.com/testfx/testfx/compare/v4.0.8-alpha...v4.0.9-alpha)
+
+**Merged pull requests:**
+
+- \(release\) TestFX 4.0.9-alpha [\#464](https://github.com/TestFX/TestFX/pull/464) ([brcolow](https://github.com/brcolow))
+- \(chore\) Switch from findbugs to spotbugs. [\#463](https://github.com/TestFX/TestFX/pull/463) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Produce better descriptions of actual if mismatch. [\#461](https://github.com/TestFX/TestFX/pull/461) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Add module-info.java to testfx-core. [\#460](https://github.com/TestFX/TestFX/pull/460) ([brcolow](https://github.com/brcolow))
+- \(chore\) Try to fix codecov a different way. [\#459](https://github.com/TestFX/TestFX/pull/459) ([brcolow](https://github.com/brcolow))
+- \(chore\) Fix codecov paths for core project. [\#458](https://github.com/TestFX/TestFX/pull/458) ([brcolow](https://github.com/brcolow))
+- \(chore\) Utilize Travis CI log folding. [\#457](https://github.com/TestFX/TestFX/pull/457) ([brcolow](https://github.com/brcolow))
+- \(chore\) Update README. [\#456](https://github.com/TestFX/TestFX/pull/456) ([brcolow](https://github.com/brcolow))
+- \(chore\) Automatically upload snapshot docs via Travis. [\#455](https://github.com/TestFX/TestFX/pull/455) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump gradle 4.2.1 -\> 4.3.1. [\#454](https://github.com/TestFX/TestFX/pull/454) ([brcolow](https://github.com/brcolow))
+- \(chore\) Remove dependency on Guava. [\#453](https://github.com/TestFX/TestFX/pull/453) ([brcolow](https://github.com/brcolow))
+- \(fix\) Remove Findbugs annotations. [\#450](https://github.com/TestFX/TestFX/pull/450) ([brcolow](https://github.com/brcolow))
+- \(enhancement\) Issue \#441 - OSGi Headers in Manifest [\#446](https://github.com/TestFX/TestFX/pull/446) ([jtkb](https://github.com/jtkb))
+- \(chore\) Add Java 9 builds to Appveyor. [\#445](https://github.com/TestFX/TestFX/pull/445) ([brcolow](https://github.com/brcolow))
+- \(chore\) Bump gradle 4.1 =\> 4.2.1 [\#444](https://github.com/TestFX/TestFX/pull/444) ([brcolow](https://github.com/brcolow))
+- Propagate uncaught exceptions [\#440](https://github.com/TestFX/TestFX/pull/440) ([Ortner](https://github.com/Ortner))
+- \(chore\) Add Java 9 build for macOS to Travis. [\#439](https://github.com/TestFX/TestFX/pull/439) ([brcolow](https://github.com/brcolow))
+- Flaky test: org.testfx.cases.acceptance.FxAssertBasicTest \> button\_has\_label  [\#438](https://github.com/TestFX/TestFX/pull/438) ([Oliver-Loeffler](https://github.com/Oliver-Loeffler))
+
+## [v4.0.8-alpha](https://github.com/testfx/testfx/tree/v4.0.8-alpha) (2017-10-04)
+[Full Changelog](https://github.com/testfx/testfx/compare/v4.0.7-alpha...v4.0.8-alpha)
+
+**Merged pull requests:**
+
+- \(release\) TestFX 4.0.8-alpha [\#434](https://github.com/TestFX/TestFX/pull/434) ([brcolow](https://github.com/brcolow))
 - \[WIP\] \(refactor\) Use Java-version-independent adapter for internal API [\#429](https://github.com/TestFX/TestFX/pull/429) ([JordanMartinez](https://github.com/JordanMartinez))
 - \(chore\) Use template in gradle-license-plugin. [\#428](https://github.com/TestFX/TestFX/pull/428) ([brcolow](https://github.com/brcolow))
 - \(chore\) Remove Travis macOS "partial headless" build. [\#426](https://github.com/TestFX/TestFX/pull/426) ([brcolow](https://github.com/brcolow))

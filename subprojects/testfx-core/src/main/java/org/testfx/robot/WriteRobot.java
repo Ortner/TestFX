@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -21,15 +21,24 @@ public interface WriteRobot {
     /**
      * Writes a given text character.
      *
-     * @param character the text character
+     * @param character the text character to write
      */
     void write(char character);
 
     /**
-     * Writes given text characters one after the other.
+     * Writes the given text characters one after the other.
      *
-     * @param text the text characters
+     * @param text the text characters to write
      */
     void write(String text);
 
+    /**
+     * Writes the given text characters one after the other, sleeping for
+     * {@code sleepMillis} milliseconds after each typed character.
+     *
+     * @param text the text characters to write
+     * @param sleepMillis the milliseconds to sleep for after each
+     * character
+     */
+    void write(String text, int sleepMillis);
 }

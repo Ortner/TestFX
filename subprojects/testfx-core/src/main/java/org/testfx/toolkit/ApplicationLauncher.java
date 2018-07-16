@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -20,14 +20,14 @@ import javafx.application.Application;
 
 /**
  * Interface that configures a few necessary System properties before launching an application with
- * its given parameters
+ * its' given parameters.
  */
 public interface ApplicationLauncher {
 
     /**
-     * Configures a few necessary System properties before launching the application with the given arguments.
+     * Configures a few necessary System properties before launching the application
+     * with the given arguments.
      */
-    void launch(Class<? extends Application> appClass,
-                String... appArgs);
+    void launch(Class<? extends Application> appClass, String... appArgs);
 
 }

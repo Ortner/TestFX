@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -16,29 +16,29 @@
  */
 package org.testfx.robot.impl;
 
-import java.util.Locale;
 import java.util.concurrent.TimeoutException;
 
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.rules.Timeout;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.TestFXRule;
 import org.testfx.util.WaitForAsyncUtils;
 
-import static javafx.scene.input.KeyCode.COMMAND;
-import static javafx.scene.input.KeyCode.CONTROL;
 import static javafx.scene.input.KeyCode.SHORTCUT;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.robot.impl.KeyboardRobotImpl.OS_SPECIFIC_SHORTCUT;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
 
 /**
@@ -48,14 +48,7 @@ import static org.testfx.util.DebugUtils.informedErrorMessage;
 public class ShortcutKeyTest extends FxRobot {
 
     @Rule
-    public TestFXRule testFXRule = new TestFXRule();
-
-    private static final KeyCode OS_SPECIFIC_KEY;
-
-    static {
-        String osName = System.getProperty("os.name").toLowerCase(Locale.US);
-        OS_SPECIFIC_KEY = osName.startsWith("mac") ? COMMAND : CONTROL;
-    }
+    public TestRule rule = RuleChain.outerRule(new TestFXRule()).around(Timeout.millis(3000));
 
     private TextField field;
     private final String pressedText = "pressed";
@@ -67,7 +60,7 @@ public class ShortcutKeyTest extends FxRobot {
         FxToolkit.setupStage(stage -> {
             field = new TextField("not pressed");
             field.setOnKeyPressed(e -> {
-                if (e.getCode().equals(OS_SPECIFIC_KEY)) {
+                if (e.getCode().equals(OS_SPECIFIC_SHORTCUT)) {
                     field.setText(pressedText);
                 }
                 else {
@@ -76,7 +69,7 @@ public class ShortcutKeyTest extends FxRobot {
                 e.consume();
             });
             field.setOnKeyReleased(e -> {
-                if (e.getCode().equals(OS_SPECIFIC_KEY)) {
+                if (e.getCode().equals(OS_SPECIFIC_SHORTCUT)) {
                     field.setText(releasedText);
                 }
                 else {
@@ -93,9 +86,9 @@ public class ShortcutKeyTest extends FxRobot {
     }
 
     @After
-    public void cleanup() throws TimeoutException {
+    public void cleanup() {
         // prevent hanging if test fails
-        release(SHORTCUT, OS_SPECIFIC_KEY);
+        release(SHORTCUT, OS_SPECIFIC_SHORTCUT);
     }
 
     @Test
@@ -110,7 +103,7 @@ public class ShortcutKeyTest extends FxRobot {
     @Test
     public void shortcut_keyCode_converts_to_OS_specific_keyCode_when_released() {
         // given:
-        press(OS_SPECIFIC_KEY);
+        press(OS_SPECIFIC_SHORTCUT);
 
         // and:
         verifyThat(field.getText(), equalTo(pressedText), informedErrorMessage(this));

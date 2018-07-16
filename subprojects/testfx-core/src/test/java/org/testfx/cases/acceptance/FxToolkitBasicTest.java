@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 SmartBear Software
- * Copyright 2014-2017 The TestFX Contributors
+ * Copyright 2014-2018 The TestFX Contributors
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the
  * European Commission - subsequent versions of the EUPL (the "Licence"); You may
@@ -22,9 +22,9 @@ import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.testfx.TestFXRule;
 import org.testfx.api.FxToolkit;
 import org.testfx.cases.TestCaseBase;
+import org.testfx.framework.junit.TestFXRule;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -42,7 +42,6 @@ public class FxToolkitBasicTest extends TestCaseBase {
 
     @Test
     public void registerPrimaryStage_should_be_callable_multiple_times() throws Exception {
-        // expect:
         FxToolkit.registerPrimaryStage();
         FxToolkit.registerPrimaryStage();
         FxToolkit.registerPrimaryStage();
